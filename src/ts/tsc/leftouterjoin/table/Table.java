@@ -6,10 +6,11 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class Table implements TableInterface{
     private String filePath;
-    public CollectionFabricInterface tableCollection;
+    private CollectionFabricInterface tableCollection;
     public static final int FILE_NOT_FOUND = -1;
     public static final int IO_EXCEPTION = 0;
     public static final int SUCCESS = 1;
@@ -29,7 +30,8 @@ public class Table implements TableInterface{
             while ((fileLine = bufferedReader.readLine()) != null) {
 
                 String[] fileLineArray = LineFormatter.parseLine(fileLine);
-                tableCollection.add(new TableLine(Integer.parseInt(fileLineArray[0]), fileLineArray[1]));
+                tableCollection.add(new TableLine(Integer.parseInt(fileLineArray[0]),
+                        Arrays.copyOfRange(fileLineArray, 1, fileLineArray.length)));
 
             }
 
@@ -49,9 +51,8 @@ public class Table implements TableInterface{
     }
 
     @Override
-    public int doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection) {
-        tableCollection.doLeftOuterJoin(toJoinTableCollection);
-        return 0;
+    public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine) {
+        return tableCollection.doLeftOuterJoin(toJoinTableCollection, tableLine);
     }
     public CollectionFabricInterface getTableCollection() {
         return tableCollection;

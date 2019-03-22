@@ -4,7 +4,7 @@ import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
 
 public interface TableInterface {
     CollectionFabricInterface getCollection(CollectionFabricInterface requestedTableCollection);
-    int doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection);
+    CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine);
     boolean isEmpty();
     String[] printTable();
     String toString();

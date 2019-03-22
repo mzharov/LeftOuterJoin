@@ -2,6 +2,7 @@ package ts.tsc.leftouterjoin.collectionfabric;
 
 import ts.tsc.leftouterjoin.table.LineInterface;
 
+import java.util.List;
 import java.util.Map;
 
 public class MapFabric implements CollectionFabricInterface {
@@ -22,8 +23,8 @@ public class MapFabric implements CollectionFabricInterface {
     }
 
     @Override
-    public int doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection) {
-        return 0;
+    public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine) {
+        return null;
     }
 
     @Override
@@ -41,6 +42,19 @@ public class MapFabric implements CollectionFabricInterface {
 
     @Override
     public String toString() {
+        return null;
+    }
+
+    @Override
+    public Map<Integer, LineInterface> getMapCollection() {
+        return mapTable;
+    }
+
+    @Override
+    public List<LineInterface> getListCollection() {
+        /*
+         * TODO
+         */
         return null;
     }
 }

@@ -1,16 +1,36 @@
 package ts.tsc.leftouterjoin.table;
 
+import java.util.ArrayList;
+
 public class TableLine implements LineInterface{
     private Integer id;
-    private String value;
-    public TableLine(Integer id, String value) {
+    private String[] values;
+    public TableLine(Integer id, String[] values) {
         this.id = id;
-        this.value = value;
+        this.values = values;
+    }
+    public TableLine() {}
+
+    @Override
+    public TableLine setParameters(ArrayList<Object> parameters) {
+        String[] values = new String[parameters.size()-1];
+
+        for(int iterator = 1; iterator < parameters.size(); iterator++) {
+            values[iterator-1] = parameters.get(iterator).toString();
+        }
+        return new TableLine((Integer) parameters.get(0), values);
     }
 
     @Override
     public String toString() {
-        return id + " " + value;
+        StringBuilder tableLine = new StringBuilder();
+
+        tableLine.append(id);
+        for (String line : values) {
+            tableLine.append(" ");
+            tableLine.append(line);
+        }
+        return tableLine.toString();
     }
 
     @Override
@@ -19,7 +39,17 @@ public class TableLine implements LineInterface{
     }
 
     @Override
+    public int getValuesSize() {
+        return values.length;
+    }
+
+    @Override
     public LineInterface getLine() {
         return this;
+    }
+
+    @Override
+    public String[] getValues() {
+        return values;
     }
 }
