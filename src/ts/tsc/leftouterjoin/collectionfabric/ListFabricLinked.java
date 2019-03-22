@@ -17,13 +17,6 @@ public class ListFabricLinked extends ListFabric {
         }
     }
 
-    private ArrayList<Object> createLine(LineInterface lineTable) {
-        ArrayList<Object> tableParameters = new ArrayList<>();
-        tableParameters.add(lineTable.getId());
-        tableParameters.addAll(Arrays.asList(lineTable.getValues()));
-        tableParameters.addAll(Arrays.asList(lineTable));
-        return tableParameters;
-    }
     @Override
     public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine){
         listTable.sort(new ListComparator());
@@ -38,35 +31,31 @@ public class ListFabricLinked extends ListFabric {
             Iterator<LineInterface> backwardIterator =
                     tableLinkedList.descendingIterator();
 
-            boolean idFound = false;
             int size = toJoinTableCollection.getListCollection().get(0).getValuesSize();
 
-
-            if(lineInterfaceLeft.getId().compareTo(tableLinkedList.peek().getId()) < 0
-                    || lineInterfaceLeft.getId().compareTo(tableLinkedList.getLast().getId()) > 0) {
-                continue;
-            }
-            while (!frontIterator.equals(backwardIterator)
-                    && frontIterator.hasNext()
-                    && backwardIterator.hasNext()) {
-                System.out.println("xx");
-                LineInterface head = frontIterator.next();
-                LineInterface end = backwardIterator.next();
-                if(lineInterfaceLeft.getId().compareTo(head.getId())== 0) {
-                    idFound = true;
-                    requestedTableCollection.add(tableLine.setParameters(createLine(head)));
-                }
-                if(lineInterfaceLeft.getId().compareTo(end.getId())== 0) {
-                    idFound = true;
-                    requestedTableCollection.add(tableLine.setParameters(createLine(end)));
-                }
-
-                if(!idFound) {
+            if(tableLinkedList.peek() == null) continue;
+            else {
+                int id = tableLinkedList.peek().getId();
+                if(lineInterfaceLeft.getId().compareTo(id) < 0
+                        || lineInterfaceLeft.getId().compareTo(tableLinkedList.getLast().getId()) > 0) {
                     requestedTableCollection.add(tableLine
                             .setParameters(getNotJoinedLine(lineInterfaceLeft, size)));
+                    continue;
                 }
             }
+            while (frontIterator.hasNext() && backwardIterator.hasNext()) {
 
+                LineInterface head = frontIterator.next();
+                if(lineInterfaceLeft.getId().compareTo(head.getId())== 0) {
+                    requestedTableCollection.add(tableLine.setParameters(createLine(lineInterfaceLeft, head)));
+                }
+
+                LineInterface end = backwardIterator.next();
+                if (head.equals(end)) break;
+                if(lineInterfaceLeft.getId().compareTo(end.getId())== 0) {
+                    requestedTableCollection.add(tableLine.setParameters(createLine(lineInterfaceLeft, end)));
+                }
+            }
         }
         return requestedTableCollection;
     }

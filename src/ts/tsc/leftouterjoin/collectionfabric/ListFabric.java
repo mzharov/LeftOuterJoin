@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ListFabric implements CollectionFabricInterface {
-    protected List<LineInterface> listTable;
+    protected final List<LineInterface> listTable;
     public ListFabric(List<LineInterface> listTable) {
         this.listTable = listTable;
     }
@@ -27,6 +27,14 @@ public class ListFabric implements CollectionFabricInterface {
         }
         return values;
     }
+    protected ArrayList<Object> createLine(LineInterface lineTableFirst, LineInterface lineTableSecond) {
+        ArrayList<Object> tableParameters = new ArrayList<>();
+        tableParameters.add(lineTableFirst.getId());
+        tableParameters.addAll(Arrays.asList(lineTableFirst.getValues()));
+        tableParameters.addAll(Arrays.asList(lineTableSecond.getValues()));
+        return tableParameters;
+    }
+
     @Override
     public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine){
 
@@ -38,12 +46,7 @@ public class ListFabric implements CollectionFabricInterface {
 
             for (LineInterface toJoinIterator : toJoinTableCollection.getListCollection()) {
                 if(lineInterfaceLeft.getId().compareTo(toJoinIterator.getId())==0) {
-                    ArrayList<Object> tableParameters = new ArrayList<>();
-                    tableParameters.add(lineInterfaceLeft.getId());
-                    tableParameters.addAll(Arrays.asList(lineInterfaceLeft.getValues()));
-                    tableParameters.addAll(Arrays.asList(toJoinIterator.getValues()));
-
-                    requestedTableCollection.add(tableLine.setParameters(tableParameters));
+                    requestedTableCollection.add(tableLine.setParameters(createLine(lineInterfaceLeft, toJoinIterator)));
                     idFound = true;
                 }
             }

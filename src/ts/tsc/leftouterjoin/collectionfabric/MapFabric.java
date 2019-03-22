@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MapFabric implements CollectionFabricInterface {
-    private Map<Integer, LineInterface> mapTable;
+    private final Map<Integer, LineInterface> mapTable;
 
     public MapFabric(Map<Integer,LineInterface> mapTable) {
         this.mapTable = mapTable;

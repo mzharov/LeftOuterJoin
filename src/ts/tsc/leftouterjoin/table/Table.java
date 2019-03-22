@@ -9,8 +9,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class Table implements TableInterface{
-    private String filePath;
-    private CollectionFabricInterface tableCollection;
+    private final String filePath;
+    private final CollectionFabricInterface tableCollection;
+
     public static final int FILE_NOT_FOUND = -1;
     public static final int IO_EXCEPTION = 0;
     public static final int SUCCESS = 1;
