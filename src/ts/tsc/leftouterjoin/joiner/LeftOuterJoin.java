@@ -1,10 +1,9 @@
 package ts.tsc.leftouterjoin.joiner;
 
-import ts.tsc.leftouterjoin.collectionfabric.ListFabric;
+import ts.tsc.leftouterjoin.collectionfabric.ListFabricLinked;
 import ts.tsc.leftouterjoin.collectionfabric.MapFabric;
 import ts.tsc.leftouterjoin.table.Table;
 
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LeftOuterJoin {
@@ -21,7 +20,7 @@ public class LeftOuterJoin {
         String path1 = "C:\\Programming\\LeftOuterJoin\\firstTable";
         String path2 = "C:\\Programming\\LeftOuterJoin\\secondTable";
 
-        Table firstTable = new Table(path1, new ListFabric(new ArrayList<>()));
+        Table firstTable = new Table(path1, new ListFabricLinked());
         Table secondTable = new Table(path2, new MapFabric(new ConcurrentHashMap<>()));
 
         if(firstTable.readFile() == Table.SUCCESS) {

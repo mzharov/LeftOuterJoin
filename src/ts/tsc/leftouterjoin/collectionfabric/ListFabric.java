@@ -1,19 +1,13 @@
 package ts.tsc.leftouterjoin.collectionfabric;
 
-import ts.tsc.leftouterjoin.listcollections.CollectionInterface;
 import ts.tsc.leftouterjoin.table.LineInterface;
 
-public class ListFabric implements CollectionFabricInterface {
-    //private List<LineInterface> listTable;
-    private CollectionInterface listTable;
+import java.util.List;
 
-    public ListFabric(CollectionInterface listTable) {
+public abstract class ListFabric implements CollectionFabricInterface {
+    protected List<LineInterface> listTable;
+    public ListFabric(List<LineInterface> listTable) {
         this.listTable = listTable;
-    }
-
-    @Override
-    public void add(LineInterface stroke) {
-        listTable.add(stroke);
     }
 
     @Override
