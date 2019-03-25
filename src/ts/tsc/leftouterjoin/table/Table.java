@@ -68,7 +68,7 @@ public class Table implements TableInterface{
      * Левостороннее объединение
      * @param toJoinTableCollection правая таблицв
      * @param tableLine тип табличного представления
-     * @return полученна ятаблица
+     * @return полученная таблица
      */
     @Override
     public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine) {

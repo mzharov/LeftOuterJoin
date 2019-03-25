@@ -44,7 +44,7 @@ public class TableLine implements LineInterface{
     }
 
     @Override
-    public int getValuesSize() {
+    public int getValueCellsCount() {
         return values.length;
     }
 

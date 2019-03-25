@@ -16,12 +16,22 @@ class LeftOuterJoin {
     private static Table secondTable;
 
 
+    private static void errorLog(int tableCondition, String path) {
+        if(tableCondition == Table.FILE_NOT_FOUND) {
+            System.out.println("Не найден файл: " + path);
+        }
+        if(tableCondition == Table.IO_EXCEPTION) {
+            System.out.println("Ошибка в ходе чтения файла: " + path);
+        }
+    }
     /**
      * Вывод данных из табличного представления интерфейса
      * @param table интерфейс таблицы
      */
-    private static void printTable(final CollectionFabricInterface table) {
+    private static void printTable(String message, final CollectionFabricInterface table) {
         String[] tableArray = table.toStringArray();
+
+        System.out.println(message);
 
         for (String line : tableArray) {
             System.out.println(line);
@@ -31,10 +41,10 @@ class LeftOuterJoin {
     /**
      * Левосторонне объединение
      */
-    private static void doLeftOuterJoin() {
+    private static void doLeftOuterJoin(String message) {
         CollectionFabricInterface leftOuterJoin =
                 firstTable.doLeftOuterJoin(secondTable.getTableCollection(), new TableLine());
-        printTable(leftOuterJoin);
+        printTable(message, leftOuterJoin);
     }
 
     /**
@@ -42,40 +52,44 @@ class LeftOuterJoin {
      * @param firstTableCollection интерфейс первой коллекции
      * @param secondTableCollection интерфейс второй коллекции
      */
-    private static void transaction(CollectionFabricInterface firstTableCollection,
+    private static void transaction(String message, CollectionFabricInterface firstTableCollection,
                                     CollectionFabricInterface secondTableCollection) {
         firstTable.setNewCollection(firstTableCollection);
         secondTable.setNewCollection(secondTableCollection);
-        doLeftOuterJoin();
+        doLeftOuterJoin(message);
     }
 
     public static void main(String[] args) {
 
-        String path1 = "firstTable";
-        String path2 = "secondTable";
+        String pathToFirstTable = "firstTable";
+        String pathToSecondTable = "secondTable";
 
-        firstTable = new Table(path1, new ListFabric(new ArrayList<>()));
-        secondTable = new Table(path2, new ListFabric(new ArrayList<>()));
+        firstTable = new Table(pathToFirstTable, new ListFabric(new ArrayList<>()));
+        secondTable = new Table(pathToSecondTable, new ListFabric(new ArrayList<>()));
 
-        if(firstTable.readFile() == Table.SUCCESS && secondTable.readFile() == Table.SUCCESS) {
-            System.out.println("Файлы: " + path1 + " и " + path2 + " прочитаны");
+        int fTableCondition = firstTable.readFile();
+        int sTableCondition = secondTable.readFile();
 
-            System.out.println("Первая таблица:");
-            printTable(firstTable.getTableCollection());
-            System.out.println("Вторая таблица:");
-            printTable(secondTable.getTableCollection());
+        errorLog(fTableCondition, pathToFirstTable);
+        errorLog(sTableCondition, pathToSecondTable);
 
-            System.out.println("---Левостороннее объединение ArrayList---");
-            doLeftOuterJoin();
+        if(fTableCondition == Table.SUCCESS && sTableCondition == Table.SUCCESS) {
+            System.out.println("---Файлы: " + pathToFirstTable + " и " + pathToSecondTable + " прочитаны---");
 
-            System.out.println("---Передача параметров в отсортированный LinkedList и левосторонее объединение---");
-            transaction(new ListFabricLinked(), new ListFabricLinked());
+            String message = "---Первая таблица:---";
+            printTable(message, firstTable.getTableCollection());
+            message = "---Вторая таблица:---";
+            printTable(message, secondTable.getTableCollection());
 
-            System.out.println("---Передача параметров в Map и и левосторонее объединение--");
-            transaction(new MapFabric(new ConcurrentHashMap<>()), new MapFabric(new ConcurrentHashMap<>()));
+            message = "---Левостороннее объединение таблиц, хранящихся в ArrayList---";
+            doLeftOuterJoin(message);
 
-        } else {
-            System.out.println("Ошибка в ходе чтения файлов: " + path1 + " и/или " + path2);
+            message = "---Передача таблиц для хранения в LinkedList и их левосторонее объединение---";
+            transaction(message, new ListFabricLinked(), new ListFabricLinked());
+
+            message = "---Передача таблиц для хранения в Map и их левосторонее объединение--";
+            transaction(message, new MapFabric(new ConcurrentHashMap<>()), new MapFabric(new ConcurrentHashMap<>()));
+
         }
 
     }

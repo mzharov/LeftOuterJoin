@@ -51,7 +51,6 @@ public class MapFabric implements CollectionFabricInterface {
     public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine) {
 
         CollectionFabricInterface requestedTableCollection = new MapFabric(new ConcurrentHashMap<>());
-
         /*
          * Цикл по левой таблице для поиска ключей в правой
          */
@@ -59,7 +58,6 @@ public class MapFabric implements CollectionFabricInterface {
 
             Integer rightMapTableKey = (leftTableEntry.getKey());
             List<LineInterface> leftMapTableValues = leftTableEntry.getValue();
-
             /*
              * Проходим по списку значений Map с одинаковыми ключами
              */
@@ -67,7 +65,6 @@ public class MapFabric implements CollectionFabricInterface {
 
                 List<LineInterface> rightMapValues;
                 Map<Integer, List<LineInterface>> leftTable = toJoinTableCollection.getMapCollection();
-
                 /*
                  * Если найден совпадающий ключ, то для всех значений с
                  * тем же ключом из правой таблицы совершается объединение
@@ -83,7 +80,7 @@ public class MapFabric implements CollectionFabricInterface {
                     /*
                      * Если нет строк с таким же ключом, недостающие ячейки заполняются "null"
                      */
-                    int size = leftMapValue.getValuesSize();
+                    int size = leftMapValue.getValueCellsCount();
                     requestedTableCollection.add(tableLine
                             .setParameters(LineCreator.getNotJoinedLine(leftMapValue, size)));
                 }

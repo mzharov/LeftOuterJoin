@@ -34,7 +34,7 @@ public class ListFabric implements CollectionFabricInterface {
         for (LineInterface leftTable : listTable) {
 
             boolean idFound = false;
-            int size = toJoinTableCollection.getArrayListCollection().get(0).getValuesSize();
+            int size = toJoinTableCollection.getArrayListCollection().get(0).getValueCellsCount();
 
             /*
              * Ищем во второй таблице строки с таким же ключом

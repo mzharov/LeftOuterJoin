@@ -19,6 +19,75 @@ public class ListFabricLinked extends ListFabric {
         }
     }
 
+
+    private void rightTableSearch(final LineInterface leftTable,
+                                           final LinkedList<LineInterface> rightTable,
+                                           ListFabric requestedTableCollection,
+                                           LineInterface tableLine) {
+        /*
+         * Итераторы для прохода с начала и с конца по правой таблице
+         */
+        Iterator<LineInterface> frontIterator =
+                rightTable.iterator();
+        Iterator<LineInterface> backwardIterator =
+                rightTable.descendingIterator();
+
+        int size = rightTable.get(0).getValueCellsCount();
+
+        if(rightTable.peek() == null) return;
+        else {
+            /*
+             * Если ключ из левой таблицы не входит
+             * в диапазон значений в правой таблице,
+             * то переходим к следующей итерации
+             */
+            int id = rightTable.peek().getId();
+            if(leftTable.getId().compareTo(id) < 0
+                    || leftTable.getId().compareTo(rightTable.getLast().getId()) > 0) {
+                requestedTableCollection.add(tableLine
+                        .setParameters(LineCreator.getNotJoinedLine(leftTable, size)));
+                return;
+            }
+        }
+        /*
+         * Проходим по второй таблице с обеих сторон в поисках такого же ключа
+         */
+        boolean idFound = false;
+
+        while (frontIterator.hasNext() && backwardIterator.hasNext()) {
+
+            /*
+             * Если найдено совпадение для правого итератора
+             */
+            LineInterface head = frontIterator.next();
+            if(leftTable.getId().compareTo(head.getId())== 0) {
+                requestedTableCollection.add(tableLine
+                        .setParameters(LineCreator.createLine(leftTable, head)));
+                idFound = true;
+            }
+
+            LineInterface end = backwardIterator.next();
+            if (head.equals(end)) break; // если итераторы сошлись, выходим из цикла
+
+            /*
+             * Если найдено совпадение для левого итератора
+             */
+            if(leftTable.getId().compareTo(end.getId())== 0) {
+                requestedTableCollection.add(tableLine
+                        .setParameters(LineCreator.createLine(leftTable, end)));
+                idFound = true;
+            }
+        }
+        /*
+         * Если совпадений не найдено недостающие строки заполняются "null"
+         */
+        if(!idFound) {
+            requestedTableCollection.add(tableLine
+                    .setParameters(LineCreator.getNotJoinedLine(leftTable, size)));
+        }
+
+    }
+
     /**
      * Левостороннее объединение
      * @param toJoinTableCollection правая таблица
@@ -28,85 +97,37 @@ public class ListFabricLinked extends ListFabric {
 
     @Override
     public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine){
-
         /*
          * Создание объединенной таблицы того же типа, что и левая
          * преобразование полученной таблицы к тому же типу, что и левая
          */
         ListFabric requestedTableCollection = new ListFabric(new LinkedList<>());
         LinkedList<LineInterface> rightTable = (LinkedList<LineInterface>) toJoinTableCollection.getLinkedListCollection();
-
         /*
-         * Сортировка обеих списков
+         * Сортировка обоих списков
          */
         rightTable.sort(new ListComparator());
         listTable.sort(new ListComparator());
 
-        for (LineInterface leftTable : listTable) {
+        Iterator<LineInterface> frontIterator =
+                listTable.iterator();
+        Iterator<LineInterface> backwardIterator =
+                ((LinkedList<LineInterface>)listTable).descendingIterator();
 
+        while (frontIterator.hasNext() && backwardIterator.hasNext()) {
             /*
-             * Итераторы для прохода с начала и с конца по правой таблице
+             * итератор с головы списка
              */
-            Iterator<LineInterface> frontIterator =
-                    rightTable.iterator();
-            Iterator<LineInterface> backwardIterator =
-                    rightTable.descendingIterator();
-
-            int size = toJoinTableCollection.getLinkedListCollection().get(0).getValuesSize();
-
-            if(rightTable.peek() == null) continue;
-            else {
-                /*
-                 * Если ключ из левой таблицы не входит
-                 * в диапазон значений в правой таблице,
-                 * то переходим к следующей итерации
-                 */
-                int id = rightTable.peek().getId();
-                if(leftTable.getId().compareTo(id) < 0
-                        || leftTable.getId().compareTo(rightTable.getLast().getId()) > 0) {
-                    requestedTableCollection.add(tableLine
-                            .setParameters(LineCreator.getNotJoinedLine(leftTable, size)));
-                    continue;
-                }
-            }
+            LineInterface head = frontIterator.next();
+            rightTableSearch(head, rightTable, requestedTableCollection, tableLine);
             /*
-             * Проходим по второй таблице с обеих сторон в поисках такого же ключа
+             * итератор с хвоста списка
              */
-            boolean idFound = false;
-
-            while (frontIterator.hasNext() && backwardIterator.hasNext()) {
-
-                /*
-                 * Если найдено совпадение для правого итератора
-                 */
-                LineInterface head = frontIterator.next();
-                if(leftTable.getId().compareTo(head.getId())== 0) {
-                    requestedTableCollection.add(tableLine
-                            .setParameters(LineCreator.createLine(leftTable, head)));
-                    idFound = true;
-                }
-
-                LineInterface end = backwardIterator.next();
-                if (head.equals(end)) break; // если итераторы сошлись, выходим из цикла
-
-
-                /*
-                 * Если найдено совпадение для левого итератора
-                 */
-                if(leftTable.getId().compareTo(end.getId())== 0) {
-                    requestedTableCollection.add(tableLine
-                            .setParameters(LineCreator.createLine(leftTable, end)));
-                    idFound = true;
-                }
-            }
-            /*
-             * Если совпадений не найдено недостающие строки заполняются "null"
-             */
-            if(!idFound) {
-                requestedTableCollection.add(tableLine
-                        .setParameters(LineCreator.getNotJoinedLine(leftTable, size)));
-            }
+            LineInterface end = backwardIterator.next();
+            if (head.equals(end)) break; // если итераторы указывают на один элемент, выходим из цикла
+            rightTableSearch(end, rightTable, requestedTableCollection, tableLine);
         }
+
         return requestedTableCollection;
     }
 
