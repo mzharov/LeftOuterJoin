@@ -11,6 +11,11 @@ public class TableLine implements LineInterface{
     }
     public TableLine() {}
 
+    /**
+     * задание параметров строки с помощью списка объектов
+     * @param parameters список объектов для инициализации строки
+     * @return строка TableLine
+     */
     @Override
     public TableLine setParameters(ArrayList<Object> parameters) {
         String[] values = new String[parameters.size()-1];
@@ -43,10 +48,6 @@ public class TableLine implements LineInterface{
         return values.length;
     }
 
-    @Override
-    public LineInterface getLine() {
-        return this;
-    }
 
     @Override
     public String[] getValues() {

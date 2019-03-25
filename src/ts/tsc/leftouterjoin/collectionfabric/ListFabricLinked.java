@@ -2,7 +2,9 @@ package ts.tsc.leftouterjoin.collectionfabric;
 
 import ts.tsc.leftouterjoin.table.LineInterface;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 public class ListFabricLinked extends ListFabric {
 
@@ -17,46 +19,107 @@ public class ListFabricLinked extends ListFabric {
         }
     }
 
+    /**
+     * Левостороннее объединение
+     * @param toJoinTableCollection правая таблица
+     * @param tableLine типа строки таблицы
+     * @return объединенная таблицы
+     */
+
     @Override
     public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine){
+
+        /*
+         * Создание объединенной таблицы того же типа, что и левая
+         * преобразование полученной таблицы к тому же типу, что и левая
+         */
+        ListFabric requestedTableCollection = new ListFabric(new LinkedList<>());
+        LinkedList<LineInterface> rightTable = (LinkedList<LineInterface>) toJoinTableCollection.getLinkedListCollection();
+
+        /*
+         * Сортировка обеих списков
+         */
+        rightTable.sort(new ListComparator());
         listTable.sort(new ListComparator());
 
-        ListFabric requestedTableCollection = new ListFabric(new ArrayList<>());
+        for (LineInterface leftTable : listTable) {
 
-        for (LineInterface lineInterfaceLeft : listTable) {
-
-            LinkedList<LineInterface> tableLinkedList= (LinkedList<LineInterface>) toJoinTableCollection.getListCollection();
+            /*
+             * Итераторы для прохода с начала и с конца по правой таблице
+             */
             Iterator<LineInterface> frontIterator =
-                    tableLinkedList.iterator();
+                    rightTable.iterator();
             Iterator<LineInterface> backwardIterator =
-                    tableLinkedList.descendingIterator();
+                    rightTable.descendingIterator();
 
-            int size = toJoinTableCollection.getListCollection().get(0).getValuesSize();
+            int size = toJoinTableCollection.getLinkedListCollection().get(0).getValuesSize();
 
-            if(tableLinkedList.peek() == null) continue;
+            if(rightTable.peek() == null) continue;
             else {
-                int id = tableLinkedList.peek().getId();
-                if(lineInterfaceLeft.getId().compareTo(id) < 0
-                        || lineInterfaceLeft.getId().compareTo(tableLinkedList.getLast().getId()) > 0) {
+                /*
+                 * Если ключ из левой таблицы не входит
+                 * в диапазон значений в правой таблице,
+                 * то переходим к следующей итерации
+                 */
+                int id = rightTable.peek().getId();
+                if(leftTable.getId().compareTo(id) < 0
+                        || leftTable.getId().compareTo(rightTable.getLast().getId()) > 0) {
                     requestedTableCollection.add(tableLine
-                            .setParameters(getNotJoinedLine(lineInterfaceLeft, size)));
+                            .setParameters(LineCreator.getNotJoinedLine(leftTable, size)));
                     continue;
                 }
             }
+            /*
+             * Проходим по второй таблице с обеих сторон в поисках такого же ключа
+             */
+            boolean idFound = false;
+
             while (frontIterator.hasNext() && backwardIterator.hasNext()) {
 
+                /*
+                 * Если найдено совпадение для правого итератора
+                 */
                 LineInterface head = frontIterator.next();
-                if(lineInterfaceLeft.getId().compareTo(head.getId())== 0) {
-                    requestedTableCollection.add(tableLine.setParameters(createLine(lineInterfaceLeft, head)));
+                if(leftTable.getId().compareTo(head.getId())== 0) {
+                    requestedTableCollection.add(tableLine
+                            .setParameters(LineCreator.createLine(leftTable, head)));
+                    idFound = true;
                 }
 
                 LineInterface end = backwardIterator.next();
-                if (head.equals(end)) break;
-                if(lineInterfaceLeft.getId().compareTo(end.getId())== 0) {
-                    requestedTableCollection.add(tableLine.setParameters(createLine(lineInterfaceLeft, end)));
+                if (head.equals(end)) break; // если итераторы сошлись, выходим из цикла
+
+
+                /*
+                 * Если найдено совпадение для левого итератора
+                 */
+                if(leftTable.getId().compareTo(end.getId())== 0) {
+                    requestedTableCollection.add(tableLine
+                            .setParameters(LineCreator.createLine(leftTable, end)));
+                    idFound = true;
                 }
+            }
+            /*
+             * Если совпадений не найдено недостающие строки заполняются "null"
+             */
+            if(!idFound) {
+                requestedTableCollection.add(tableLine
+                        .setParameters(LineCreator.getNotJoinedLine(leftTable, size)));
             }
         }
         return requestedTableCollection;
+    }
+
+    /**
+     * Преобразование фабрики одной коллекции в
+     * фабрику другой
+     * @param table исходная фабрика
+     * @return преобразованная фабрика
+     */
+
+    @Override
+    public CollectionFabricInterface addAll(CollectionFabricInterface table) {
+        listTable = table.getLinkedListCollection();
+        return this;
     }
 }

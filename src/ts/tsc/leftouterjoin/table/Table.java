@@ -8,10 +8,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 
+
 public class Table implements TableInterface{
     private final String filePath;
-    private final CollectionFabricInterface tableCollection;
+    private CollectionFabricInterface tableCollection;
 
+    /**
+     * Коды состояния чтения файла
+     */
     public static final int FILE_NOT_FOUND = -1;
     public static final int IO_EXCEPTION = 0;
     public static final int SUCCESS = 1;
@@ -22,12 +26,27 @@ public class Table implements TableInterface{
         this.tableCollection = tableCollection;
     }
 
+    /**
+     * Преобразование одной коллекции в другую
+     * @param newTableCollection тип, который нужно произвести преобразование
+     */
+    public void setNewCollection(CollectionFabricInterface newTableCollection) {
+            tableCollection = newTableCollection.addAll(tableCollection);
+    }
+
+    /**
+     * Чтение файла
+     * @return код состояния чтения файла
+     */
     public int readFile() {
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath))) {
 
             String fileLine;
 
+            /*
+             * Чтения и запись строки в фабрику, представляющую какую-либо коллекцию
+             */
             while ((fileLine = bufferedReader.readLine()) != null) {
 
                 String[] fileLineArray = LineFormatter.parseLine(fileLine);
@@ -45,26 +64,22 @@ public class Table implements TableInterface{
         return SUCCESS;
     }
 
-    @Override
-    public CollectionFabricInterface getCollection(CollectionFabricInterface requestedTableCollection) {
-        tableCollection.getCollection(requestedTableCollection);
-        return null;
-    }
-
+    /**
+     * Левостороннее объединение
+     * @param toJoinTableCollection правая таблицв
+     * @param tableLine тип табличного представления
+     * @return полученна ятаблица
+     */
     @Override
     public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine) {
         return tableCollection.doLeftOuterJoin(toJoinTableCollection, tableLine);
     }
+
     public CollectionFabricInterface getTableCollection() {
         return tableCollection;
     }
 
-    @Override public boolean isEmpty() {
-        return tableCollection.isEmpty();
-    }
-
-    @Override
     public String[] printTable() {
-        return tableCollection.printTable();
+        return tableCollection.toStringArray();
     }
 }

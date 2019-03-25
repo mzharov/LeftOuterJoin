@@ -3,57 +3,56 @@ package ts.tsc.leftouterjoin.collectionfabric;
 import ts.tsc.leftouterjoin.table.LineInterface;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+/**
+ * Фабрика для представления таблиц в виде LinkedList
+ */
 public class ListFabric implements CollectionFabricInterface {
-    protected final List<LineInterface> listTable;
+
+    List<LineInterface> listTable;
+
     public ListFabric(List<LineInterface> listTable) {
         this.listTable = listTable;
     }
 
-    @Override
-    public CollectionFabricInterface getCollection(CollectionFabricInterface collectionFabricTable) {
-        return null;
-    }
-
-    protected ArrayList<Object> getNotJoinedLine(LineInterface lineInterfaceLeft, int size) {
-        ArrayList<Object> values = new ArrayList<>();
-        values.add(lineInterfaceLeft.getId());
-        values.addAll(Arrays.asList(lineInterfaceLeft.getValues()));
-        for(int iterator = 0; iterator < size; iterator++) {
-            values.add("null");
-        }
-        return values;
-    }
-    protected ArrayList<Object> createLine(LineInterface lineTableFirst, LineInterface lineTableSecond) {
-        ArrayList<Object> tableParameters = new ArrayList<>();
-        tableParameters.add(lineTableFirst.getId());
-        tableParameters.addAll(Arrays.asList(lineTableFirst.getValues()));
-        tableParameters.addAll(Arrays.asList(lineTableSecond.getValues()));
-        return tableParameters;
-    }
-
+    /**
+     * Левостороннее объединение
+     * @param toJoinTableCollection правая таблица
+     * @param tableLine типа строки таблицы
+     * @return объединенная таблицы
+     */
     @Override
     public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine){
 
+        //Создаем фабрику того же типа, что и текущая
         ListFabric requestedTableCollection = new ListFabric(new ArrayList<>());
 
-        for (LineInterface lineInterfaceLeft : listTable) {
-            boolean idFound = false;
-            int size = toJoinTableCollection.getListCollection().get(0).getValuesSize();
+        for (LineInterface leftTable : listTable) {
 
-            for (LineInterface toJoinIterator : toJoinTableCollection.getListCollection()) {
-                if(lineInterfaceLeft.getId().compareTo(toJoinIterator.getId())==0) {
-                    requestedTableCollection.add(tableLine.setParameters(createLine(lineInterfaceLeft, toJoinIterator)));
+            boolean idFound = false;
+            int size = toJoinTableCollection.getArrayListCollection().get(0).getValuesSize();
+
+            /*
+             * Ищем во второй таблице строки с таким же ключом
+             */
+            for (LineInterface rightTable : toJoinTableCollection.getArrayListCollection()) {
+                if(leftTable.getId().compareTo(rightTable.getId())==0) {
+                    requestedTableCollection.add(tableLine
+                            .setParameters(LineCreator.createLine(leftTable, rightTable)));
                     idFound = true;
                 }
             }
 
+            /*
+             * Если не найдены строки стаким же ключом, то оставшиеся ячейки заполняются "null"
+             */
             if(!idFound) {
                 requestedTableCollection.add(tableLine
-                        .setParameters(getNotJoinedLine(lineInterfaceLeft, size)));
+                        .setParameters(LineCreator.getNotJoinedLine(leftTable, size)));
             }
 
         }
@@ -61,37 +60,51 @@ public class ListFabric implements CollectionFabricInterface {
         return requestedTableCollection;
     }
 
-    @Override
-    public boolean isEmpty() {
-        return listTable.isEmpty();
-    }
 
+    /**
+     * Преобразование таблицы в массив строк
+     */
     @Override
-    public String[] printTable() {
+    public String[] toStringArray() {
         return listTable.stream()
                 .map(LineInterface::toString)
                 .toArray(String[]::new);
     }
-    @Override
-    public String toString() {
-        return null;
-    }
 
+    /**
+     * Добавление строки в коллекцию
+     * @param stroke интерфейс строки
+     */
     @Override
     public void add(LineInterface stroke) {
         listTable.add(stroke);
     }
 
     @Override
-    public List<LineInterface> getListCollection() {
+    public List<LineInterface> getArrayListCollection() {
         return listTable;
     }
 
     @Override
-    public Map<Integer, LineInterface> getMapCollection() {
-        /*
-         * TODO
-         */
-        return null;
+    public List<LineInterface> getLinkedListCollection() {
+        return new LinkedList<>(listTable);
+    }
+
+    @Override
+    public Map<Integer, List<LineInterface>> getMapCollection() {
+        return  listTable.stream()
+                .collect(Collectors.groupingBy(LineInterface::getId));
+    }
+
+    /**
+     * Преобразование фабрики одной коллекции в
+     * фабрику другой
+     * @param table исходная фабрика
+     * @return преобразованная фабрика
+     */
+    @Override
+    public CollectionFabricInterface addAll(CollectionFabricInterface table) {
+        listTable = table.getArrayListCollection();
+        return this;
     }
 }
