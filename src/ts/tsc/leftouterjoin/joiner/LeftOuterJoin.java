@@ -15,17 +15,6 @@ class LeftOuterJoin {
     private static Table firstTable;
     private static Table secondTable;
 
-    /**
-     * Вывод данных из табличного представления
-     * @param table табличное представление
-     */
-    private static void printTable(final Table table) {
-        String[] tableArray = table.printTable();
-        //System.out.println();
-        for (String line : tableArray) {
-            System.out.println(line);
-        }
-    }
 
     /**
      * Вывод данных из табличного представления интерфейса
@@ -72,9 +61,9 @@ class LeftOuterJoin {
             System.out.println("Файлы: " + path1 + " и " + path2 + " прочитаны");
 
             System.out.println("Первая таблица:");
-            printTable(firstTable);
+            printTable(firstTable.getTableCollection());
             System.out.println("Вторая таблица:");
-            printTable(secondTable);
+            printTable(secondTable.getTableCollection());
 
             System.out.println("---Левостороннее объединение ArrayList---");
             doLeftOuterJoin();

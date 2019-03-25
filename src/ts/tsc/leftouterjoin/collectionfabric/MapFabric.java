@@ -66,8 +66,7 @@ public class MapFabric implements CollectionFabricInterface {
             for (LineInterface leftMapValue : leftMapTableValues) {
 
                 List<LineInterface> rightMapValues;
-                Map<Integer, List<LineInterface>> leftTable =
-                        new ConcurrentHashMap<>(toJoinTableCollection.getMapCollection());
+                Map<Integer, List<LineInterface>> leftTable = toJoinTableCollection.getMapCollection();
 
                 /*
                  * Если найден совпадающий ключ, то для всех значений с

@@ -78,8 +78,4 @@ public class Table implements TableInterface{
     public CollectionFabricInterface getTableCollection() {
         return tableCollection;
     }
-
-    public String[] printTable() {
-        return tableCollection.toStringArray();
-    }
 }
