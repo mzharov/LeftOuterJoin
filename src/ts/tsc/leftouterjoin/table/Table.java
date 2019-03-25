@@ -63,7 +63,6 @@ public class Table implements TableInterface{
 
         return SUCCESS;
     }
-
     /**
      * Левостороннее объединение
      * @param toJoinTableCollection правая таблицв
