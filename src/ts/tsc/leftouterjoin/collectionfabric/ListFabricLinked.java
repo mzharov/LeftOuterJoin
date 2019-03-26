@@ -21,6 +21,18 @@ public class ListFabricLinked extends ListFabric {
     }
 
 
+    private int doCompare(LineInterface head,
+                          LineInterface leftTable,
+                          ListFabric requestedTableCollection,
+                          LineInterface tableLine) {
+
+        if(leftTable.getId().compareTo(head.getId())== 0) {
+            requestedTableCollection.add(tableLine
+                    .setParameters(LineCreator.createLine(leftTable, head)));
+            return 1;
+        }
+        return 0;
+    }
     private void rightTableSearch(final LineInterface leftTable,
                                            final LinkedList<LineInterface> rightTable,
                                            ListFabric requestedTableCollection,
@@ -53,7 +65,10 @@ public class ListFabricLinked extends ListFabric {
         /*
          * Проходим по второй таблице с обеих сторон в поисках такого же ключа
          */
-        boolean idFound = false;
+        int idFound = 0;
+
+        //Переменная для хранения указателя с хвоста
+        LineInterface wall = null;
 
         while (frontIterator.hasNext() && backwardIterator.hasNext()) {
 
@@ -61,11 +76,8 @@ public class ListFabricLinked extends ListFabric {
              * Если найдено совпадение для правого итератора
              */
             LineInterface head = frontIterator.next();
-            if(leftTable.getId().compareTo(head.getId())== 0) {
-                requestedTableCollection.add(tableLine
-                        .setParameters(LineCreator.createLine(leftTable, head)));
-                idFound = true;
-            }
+            if (head.equals(wall)) break; // если итераторы сошлись, выходим из цикла
+            idFound +=doCompare(head, leftTable, requestedTableCollection, tableLine);
 
             LineInterface end = backwardIterator.next();
             if (head.equals(end)) break; // если итераторы сошлись, выходим из цикла
@@ -73,16 +85,13 @@ public class ListFabricLinked extends ListFabric {
             /*
              * Если найдено совпадение для левого итератора
              */
-            if(leftTable.getId().compareTo(end.getId())== 0) {
-                requestedTableCollection.add(tableLine
-                        .setParameters(LineCreator.createLine(leftTable, end)));
-                idFound = true;
-            }
+            idFound +=doCompare(end, leftTable, requestedTableCollection, tableLine);
+            wall = end;
         }
         /*
          * Если совпадений не найдено недостающие строки заполняются "null"
          */
-        if(!idFound) {
+        if(idFound <= 0) {
             requestedTableCollection.add(tableLine
                     .setParameters(LineCreator.createNotJoinedLine(leftTable, size)));
         }
@@ -115,11 +124,13 @@ public class ListFabricLinked extends ListFabric {
         Iterator<LineInterface> backwardIterator =
                 ((LinkedList<LineInterface>)listTable).descendingIterator();
 
+        LineInterface wall = null;
         while (frontIterator.hasNext() && backwardIterator.hasNext()) {
             /*
              * итератор с головы списка
              */
             LineInterface head = frontIterator.next();
+            if (head.equals(wall)) break;
             rightTableSearch(head, rightTable, requestedTableCollection, tableLine);
             /*
              * итератор с хвоста списка
@@ -127,6 +138,7 @@ public class ListFabricLinked extends ListFabric {
             LineInterface end = backwardIterator.next();
             if (head.equals(end)) break; // если итераторы указывают на один элемент, выходим из цикла
             rightTableSearch(end, rightTable, requestedTableCollection, tableLine);
+            wall = end;
         }
 
         return requestedTableCollection;
