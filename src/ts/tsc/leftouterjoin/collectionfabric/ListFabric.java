@@ -3,10 +3,7 @@ package ts.tsc.leftouterjoin.collectionfabric;
 import ts.tsc.leftouterjoin.table.LineCreator;
 import ts.tsc.leftouterjoin.table.LineInterface;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -19,7 +16,6 @@ public class ListFabric implements CollectionFabricInterface {
     public ListFabric(List<LineInterface> listTable) {
         this.listTable = listTable;
     }
-
     /**
      * Левостороннее объединение
      * @param toJoinTableCollection правая таблица
@@ -63,11 +59,12 @@ public class ListFabric implements CollectionFabricInterface {
 
 
     /**
-     * Преобразование таблицы в массив строк
+     * Преобразование таблицы в сортированный по ключу массив строк
      */
     @Override
     public String[] toStringArray() {
         return listTable.stream()
+                .sorted(Comparator.comparing(LineInterface::getId))
                 .map(LineInterface::toString)
                 .toArray(String[]::new);
     }

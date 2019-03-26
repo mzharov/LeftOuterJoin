@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class MapFabric implements CollectionFabricInterface {
-    private  Map<Integer, List<LineInterface>> mapTable;
+    private Map<Integer, List<LineInterface>> mapTable;
 
     public MapFabric(Map<Integer, List<LineInterface>> mapTable) {
         this.mapTable = mapTable;
@@ -28,12 +28,12 @@ public class MapFabric implements CollectionFabricInterface {
             mapTableValues = mapTable.get(stroke.getId());
 
             if(mapTableValues == null) {
-                mapTableValues = new ArrayList<>();
+                mapTableValues = new LinkedList<>();
             }
             mapTableValues.add(stroke);
 
         } else  {
-            mapTableValues = new ArrayList<>();
+            mapTableValues = new LinkedList<>();
             mapTableValues.add(stroke);
         }
 
@@ -95,7 +95,7 @@ public class MapFabric implements CollectionFabricInterface {
 
 
     /**
-     * Преобразование таблицы в массив строк
+     * Преобразование таблицы в сортированный по ключу массив строк
      */
 
     @Override
@@ -103,6 +103,7 @@ public class MapFabric implements CollectionFabricInterface {
         return mapTable.values()
                 .stream()
                 .flatMap(Collection::stream)
+                .sorted(Comparator.comparing(LineInterface::getId))
                 .map(LineInterface::toString)
                 .toArray(String[]::new);
 

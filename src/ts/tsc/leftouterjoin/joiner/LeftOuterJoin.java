@@ -31,9 +31,9 @@ class LeftOuterJoin {
         String[] tableArray = table.toStringArray();
 
         System.out.println(message);
-
+        int lineNumber = 0;
         for (String line : tableArray) {
-            System.out.println(line);
+            System.out.println("[" + ++lineNumber + "] " + line);
         }
     }
     /**
@@ -75,7 +75,7 @@ class LeftOuterJoin {
 
         errorLog(fTableCondition, pathToFirstTable);
         errorLog(sTableCondition, pathToSecondTable);
-        
+
         isEmpty(firstTable, pathToFirstTable);
         isEmpty(secondTable, pathToSecondTable);
 
