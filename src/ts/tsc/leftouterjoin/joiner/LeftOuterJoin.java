@@ -15,7 +15,6 @@ class LeftOuterJoin {
     private static Table firstTable;
     private static Table secondTable;
 
-
     private static void errorLog(int tableCondition, String path) {
         if(tableCondition == Table.FILE_NOT_FOUND) {
             System.out.println("Не найден файл: " + path);
@@ -37,7 +36,6 @@ class LeftOuterJoin {
             System.out.println(line);
         }
     }
-
     /**
      * Левосторонне объединение
      */
@@ -46,7 +44,6 @@ class LeftOuterJoin {
                 firstTable.doLeftOuterJoin(secondTable.getTableCollection(), new TableLine());
         printTable(message, leftOuterJoin);
     }
-
     /**
      * Преобразование табличного представления из одних коллекций в другие
      * @param firstTableCollection интерфейс первой коллекции
@@ -57,6 +54,12 @@ class LeftOuterJoin {
         firstTable.setNewCollection(firstTableCollection);
         secondTable.setNewCollection(secondTableCollection);
         doLeftOuterJoin(message);
+    }
+
+    private static void isEmpty(Table table, String path) {
+        if(table.isEmpty())
+            System.out.println("Таблица в файле " + path + " пуста. " +
+                    "Левостороннее объединение не может быть совершено");
     }
 
     public static void main(String[] args) {
@@ -72,8 +75,12 @@ class LeftOuterJoin {
 
         errorLog(fTableCondition, pathToFirstTable);
         errorLog(sTableCondition, pathToSecondTable);
+        
+        isEmpty(firstTable, pathToFirstTable);
+        isEmpty(secondTable, pathToSecondTable);
 
-        if(fTableCondition == Table.SUCCESS && sTableCondition == Table.SUCCESS) {
+        if(fTableCondition == Table.SUCCESS && sTableCondition == Table.SUCCESS
+                && !firstTable.isEmpty() && !secondTable.isEmpty()) {
             System.out.println("---Файлы: " + pathToFirstTable + " и " + pathToSecondTable + " прочитаны---");
 
             String message = "---Первая таблица:---";

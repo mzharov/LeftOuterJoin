@@ -1,5 +1,6 @@
 package ts.tsc.leftouterjoin.collectionfabric;
 
+import ts.tsc.leftouterjoin.table.LineCreator;
 import ts.tsc.leftouterjoin.table.LineInterface;
 
 import java.util.*;
@@ -80,9 +81,9 @@ public class MapFabric implements CollectionFabricInterface {
                     /*
                      * Если нет строк с таким же ключом, недостающие ячейки заполняются "null"
                      */
-                    int size = leftMapValue.getValueCellsCount();
+                    int size = leftMapValue.getValuableCellsCount();
                     requestedTableCollection.add(tableLine
-                            .setParameters(LineCreator.getNotJoinedLine(leftMapValue, size)));
+                            .setParameters(LineCreator.createNotJoinedLine(leftMapValue, size)));
                 }
 
             }
@@ -121,7 +122,7 @@ public class MapFabric implements CollectionFabricInterface {
      */
 
     @Override
-    public CollectionFabricInterface addAll(CollectionFabricInterface table) {
+    public CollectionFabricInterface setCollection(CollectionFabricInterface table) {
         mapTable = table.getMapCollection();
         return this;
     }
@@ -140,5 +141,10 @@ public class MapFabric implements CollectionFabricInterface {
                 .stream()
                 .flatMap(Collection::stream)
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return mapTable.isEmpty();
     }
 }

@@ -1,5 +1,6 @@
 package ts.tsc.leftouterjoin.collectionfabric;
 
+import ts.tsc.leftouterjoin.table.LineCreator;
 import ts.tsc.leftouterjoin.table.LineInterface;
 
 import java.util.Comparator;
@@ -32,7 +33,7 @@ public class ListFabricLinked extends ListFabric {
         Iterator<LineInterface> backwardIterator =
                 rightTable.descendingIterator();
 
-        int size = rightTable.get(0).getValueCellsCount();
+        int size = rightTable.get(0).getValuableCellsCount();
 
         if(rightTable.peek() == null) return;
         else {
@@ -45,7 +46,7 @@ public class ListFabricLinked extends ListFabric {
             if(leftTable.getId().compareTo(id) < 0
                     || leftTable.getId().compareTo(rightTable.getLast().getId()) > 0) {
                 requestedTableCollection.add(tableLine
-                        .setParameters(LineCreator.getNotJoinedLine(leftTable, size)));
+                        .setParameters(LineCreator.createNotJoinedLine(leftTable, size)));
                 return;
             }
         }
@@ -83,7 +84,7 @@ public class ListFabricLinked extends ListFabric {
          */
         if(!idFound) {
             requestedTableCollection.add(tableLine
-                    .setParameters(LineCreator.getNotJoinedLine(leftTable, size)));
+                    .setParameters(LineCreator.createNotJoinedLine(leftTable, size)));
         }
 
     }
@@ -139,7 +140,7 @@ public class ListFabricLinked extends ListFabric {
      */
 
     @Override
-    public CollectionFabricInterface addAll(CollectionFabricInterface table) {
+    public CollectionFabricInterface setCollection(CollectionFabricInterface table) {
         listTable = table.getLinkedListCollection();
         return this;
     }

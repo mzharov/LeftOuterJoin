@@ -16,6 +16,6 @@ public interface CollectionFabricInterface extends TableInterface {
     List<LineInterface> getArrayListCollection();
     List<LineInterface> getLinkedListCollection();
     Map<Integer, List<LineInterface>> getMapCollection();
-    CollectionFabricInterface addAll(CollectionFabricInterface table);
+    CollectionFabricInterface setCollection(CollectionFabricInterface table);
     String[] toStringArray();
 }

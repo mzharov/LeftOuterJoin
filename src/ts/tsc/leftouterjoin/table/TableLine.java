@@ -1,6 +1,6 @@
 package ts.tsc.leftouterjoin.table;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class TableLine implements LineInterface{
     private Integer id;
@@ -17,7 +17,7 @@ public class TableLine implements LineInterface{
      * @return строка TableLine
      */
     @Override
-    public TableLine setParameters(ArrayList<Object> parameters) {
+    public TableLine setParameters(List<Object> parameters) {
         String[] values = new String[parameters.size()-1];
 
         for(int iterator = 1; iterator < parameters.size(); iterator++) {
@@ -44,7 +44,7 @@ public class TableLine implements LineInterface{
     }
 
     @Override
-    public int getValueCellsCount() {
+    public int getValuableCellsCount() {
         return values.length;
     }
 

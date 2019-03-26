@@ -1,5 +1,6 @@
 package ts.tsc.leftouterjoin.collectionfabric;
 
+import ts.tsc.leftouterjoin.table.LineCreator;
 import ts.tsc.leftouterjoin.table.LineInterface;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class ListFabric implements CollectionFabricInterface {
         for (LineInterface leftTable : listTable) {
 
             boolean idFound = false;
-            int size = toJoinTableCollection.getArrayListCollection().get(0).getValueCellsCount();
+            int size = toJoinTableCollection.getArrayListCollection().get(0).getValuableCellsCount();
 
             /*
              * Ищем во второй таблице строки с таким же ключом
@@ -52,7 +53,7 @@ public class ListFabric implements CollectionFabricInterface {
              */
             if(!idFound) {
                 requestedTableCollection.add(tableLine
-                        .setParameters(LineCreator.getNotJoinedLine(leftTable, size)));
+                        .setParameters(LineCreator.createNotJoinedLine(leftTable, size)));
             }
 
         }
@@ -103,8 +104,13 @@ public class ListFabric implements CollectionFabricInterface {
      * @return преобразованная фабрика
      */
     @Override
-    public CollectionFabricInterface addAll(CollectionFabricInterface table) {
+    public CollectionFabricInterface setCollection(CollectionFabricInterface table) {
         listTable = table.getArrayListCollection();
         return this;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return listTable.isEmpty();
     }
 }

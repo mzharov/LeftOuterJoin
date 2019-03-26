@@ -31,7 +31,7 @@ public class Table implements TableInterface{
      * @param newTableCollection тип, который нужно произвести преобразование
      */
     public void setNewCollection(CollectionFabricInterface newTableCollection) {
-            tableCollection = newTableCollection.addAll(tableCollection);
+            tableCollection = newTableCollection.setCollection(tableCollection);
     }
 
     /**
@@ -50,8 +50,20 @@ public class Table implements TableInterface{
             while ((fileLine = bufferedReader.readLine()) != null) {
 
                 String[] fileLineArray = LineFormatter.parseLine(fileLine);
-                tableCollection.add(new TableLine(Integer.parseInt(fileLineArray[0]),
-                        Arrays.copyOfRange(fileLineArray, 1, fileLineArray.length)));
+                /*
+                 * Проверка на правильности входной строки.
+                 * Если она не удовлетворяет условиям,
+                 * то будет проигнорирована при записи
+                 * в структуру данных
+                 */
+                if(LineFormatter.checkCellsCount(fileLineArray.length)
+                        && LineFormatter.checkIdType(fileLineArray[0])
+                        && LineFormatter.checkIdValue(fileLineArray[0])) {
+
+                    tableCollection.add(new TableLine(Integer.parseInt(fileLineArray[0]),
+                            Arrays.copyOfRange(fileLineArray, 1, fileLineArray.length)));
+
+                }
 
             }
 
@@ -76,5 +88,10 @@ public class Table implements TableInterface{
 
     public CollectionFabricInterface getTableCollection() {
         return tableCollection;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return tableCollection.isEmpty();
     }
 }

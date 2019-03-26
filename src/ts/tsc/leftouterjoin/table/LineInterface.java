@@ -1,14 +1,14 @@
 package ts.tsc.leftouterjoin.table;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Интерфейс строки таблицы
  */
 public interface LineInterface {
     Integer getId();
-    int getValueCellsCount();
+    int getValuableCellsCount();
     String[] getValues();
-    TableLine setParameters(ArrayList<Object> parameters);
+    TableLine setParameters(List<Object> parameters);
     String toString();
 }

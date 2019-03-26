@@ -1,22 +1,21 @@
-package ts.tsc.leftouterjoin.collectionfabric;
+package ts.tsc.leftouterjoin.table;
 
-import ts.tsc.leftouterjoin.table.LineInterface;
-
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Класс для создания строк в табличном представлении
  */
-class LineCreator {
+public class LineCreator {
     /**
      * Создание экземпляра строки, для которой не было найдено соответствие в правой таблице
      * @param lineInterfaceLeft интерфейс табличного представления
      * @param size количество ячеек, которые не являются ключом
      * @return Список объектов дял добавления в таблицу
      */
-    public static ArrayList<Object> getNotJoinedLine(LineInterface lineInterfaceLeft, int size) {
-        ArrayList<Object> values = new ArrayList<>();
+    public static LinkedList<Object> createNotJoinedLine(LineInterface lineInterfaceLeft, int size) {
+        LinkedList<Object> values = new LinkedList<>();
         values.add(lineInterfaceLeft.getId());
         values.addAll(Arrays.asList(lineInterfaceLeft.getValues()));
         for(int iterator = 0; iterator < size; iterator++) {
@@ -31,8 +30,8 @@ class LineCreator {
      * @param lineTableSecond интерфейс право таблицы
      * @return Список объектов дял добавления в таблицу
      */
-    public static ArrayList<Object> createLine(LineInterface lineTableFirst, LineInterface lineTableSecond) {
-        ArrayList<Object> tableParameters = new ArrayList<>();
+    public static List<Object> createLine(LineInterface lineTableFirst, LineInterface lineTableSecond) {
+        List<Object> tableParameters = new LinkedList<>();
         tableParameters.add(lineTableFirst.getId());
         tableParameters.addAll(Arrays.asList(lineTableFirst.getValues()));
         tableParameters.addAll(Arrays.asList(lineTableSecond.getValues()));
