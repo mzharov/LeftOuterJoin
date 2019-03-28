@@ -1,7 +1,7 @@
 package ts.tsc.leftouterjoin.collectionfabric;
 
-import ts.tsc.leftouterjoin.table.LineInterface;
 import ts.tsc.leftouterjoin.table.TableInterface;
+import ts.tsc.leftouterjoin.table.line.LineInterface;
 
 import java.util.List;
 import java.util.Map;

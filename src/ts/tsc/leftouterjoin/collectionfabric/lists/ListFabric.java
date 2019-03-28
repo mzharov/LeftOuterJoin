@@ -1,7 +1,8 @@
-package ts.tsc.leftouterjoin.collectionfabric;
+package ts.tsc.leftouterjoin.collectionfabric.lists;
 
-import ts.tsc.leftouterjoin.table.LineCreator;
-import ts.tsc.leftouterjoin.table.LineInterface;
+import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
+import ts.tsc.leftouterjoin.table.line.LineCreator;
+import ts.tsc.leftouterjoin.table.line.LineInterface;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,7 +24,8 @@ public class ListFabric implements CollectionFabricInterface {
      * @return объединенная таблицы
      */
     @Override
-    public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine){
+    public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection,
+                                                     LineInterface tableLine){
 
         //Создаем фабрику того же типа, что и текущая
         ListFabric requestedTableCollection = new ListFabric(new ArrayList<>());

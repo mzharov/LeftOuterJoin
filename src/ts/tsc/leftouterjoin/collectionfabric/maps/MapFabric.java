@@ -1,7 +1,8 @@
-package ts.tsc.leftouterjoin.collectionfabric;
+package ts.tsc.leftouterjoin.collectionfabric.maps;
 
-import ts.tsc.leftouterjoin.table.LineCreator;
-import ts.tsc.leftouterjoin.table.LineInterface;
+import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
+import ts.tsc.leftouterjoin.table.line.LineCreator;
+import ts.tsc.leftouterjoin.table.line.LineInterface;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,7 +50,8 @@ public class MapFabric implements CollectionFabricInterface {
      */
 
     @Override
-    public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine) {
+    public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection,
+                                                     LineInterface tableLine) {
 
         CollectionFabricInterface requestedTableCollection = new MapFabric(new ConcurrentHashMap<>());
         /*

@@ -1,4 +1,4 @@
-package ts.tsc.leftouterjoin.table;
+package ts.tsc.leftouterjoin.table.line;
 
 /**
  * Парсер строки

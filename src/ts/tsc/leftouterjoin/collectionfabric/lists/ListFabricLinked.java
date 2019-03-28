@@ -1,9 +1,9 @@
-package ts.tsc.leftouterjoin.collectionfabric;
+package ts.tsc.leftouterjoin.collectionfabric.lists;
 
-import ts.tsc.leftouterjoin.table.LineCreator;
-import ts.tsc.leftouterjoin.table.LineInterface;
+import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
+import ts.tsc.leftouterjoin.table.line.LineCreator;
+import ts.tsc.leftouterjoin.table.line.LineInterface;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -12,14 +12,6 @@ public class ListFabricLinked extends ListFabric {
     public ListFabricLinked() {
         super(new LinkedList<>());
     }
-
-    class ListComparator implements Comparator<LineInterface> {
-        @Override
-        public int compare(LineInterface firstElement, LineInterface secondElement) {
-            return firstElement.getId().compareTo(secondElement.getId());
-        }
-    }
-
 
     private int doCompare(LineInterface head,
                           LineInterface leftTable,
@@ -34,9 +26,9 @@ public class ListFabricLinked extends ListFabric {
         return 0;
     }
     private void rightTableSearch(final LineInterface leftTable,
-                                           final LinkedList<LineInterface> rightTable,
-                                           ListFabric requestedTableCollection,
-                                           LineInterface tableLine) {
+                                  final LinkedList<LineInterface> rightTable,
+                                  ListFabric requestedTableCollection,
+                                  LineInterface tableLine) {
         /*
          * Итераторы для прохода с начала и с конца по правой таблице
          */
@@ -71,7 +63,6 @@ public class ListFabricLinked extends ListFabric {
         LineInterface wall = null;
 
         while (frontIterator.hasNext() && backwardIterator.hasNext()) {
-
             /*
              * Если найдено совпадение для правого итератора
              */
@@ -81,7 +72,6 @@ public class ListFabricLinked extends ListFabric {
 
             LineInterface end = backwardIterator.next();
             if (head.equals(end)) break; // если итераторы сошлись, выходим из цикла
-
             /*
              * Если найдено совпадение для левого итератора
              */
@@ -106,13 +96,15 @@ public class ListFabricLinked extends ListFabric {
      */
 
     @Override
-    public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine){
+    public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection,
+                                                     LineInterface tableLine){
         /*
          * Создание объединенной таблицы того же типа, что и левая
          * преобразование полученной таблицы к тому же типу, что и левая
          */
         ListFabric requestedTableCollection = new ListFabric(new LinkedList<>());
-        LinkedList<LineInterface> rightTable = (LinkedList<LineInterface>) toJoinTableCollection.getLinkedListCollection();
+        LinkedList<LineInterface> rightTable = (LinkedList<LineInterface>) toJoinTableCollection
+                .getLinkedListCollection();
         /*
          * Сортировка обоих списков
          */

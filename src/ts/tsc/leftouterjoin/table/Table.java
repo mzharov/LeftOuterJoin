@@ -1,6 +1,9 @@
 package ts.tsc.leftouterjoin.table;
 
 import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
+import ts.tsc.leftouterjoin.table.line.LineFormatter;
+import ts.tsc.leftouterjoin.table.line.LineInterface;
+import ts.tsc.leftouterjoin.table.line.TableLine;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

@@ -1,11 +1,11 @@
 package ts.tsc.leftouterjoin.joiner;
 
 import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
-import ts.tsc.leftouterjoin.collectionfabric.ListFabric;
-import ts.tsc.leftouterjoin.collectionfabric.ListFabricLinked;
-import ts.tsc.leftouterjoin.collectionfabric.MapFabric;
+import ts.tsc.leftouterjoin.collectionfabric.lists.ListFabric;
+import ts.tsc.leftouterjoin.collectionfabric.lists.ListFabricLinked;
+import ts.tsc.leftouterjoin.collectionfabric.maps.MapFabric;
 import ts.tsc.leftouterjoin.table.Table;
-import ts.tsc.leftouterjoin.table.TableLine;
+import ts.tsc.leftouterjoin.table.line.TableLine;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
