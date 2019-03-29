@@ -113,44 +113,19 @@ public class ListFabricLinked extends ListFabric {
         rightTable.sort(new LineComparator());
         listTable.sort(new LineComparator());
 
-        Iterator<LineInterface> frontIteratorLeft =
+        Iterator<LineInterface> frontIterator =
                 listTable.iterator();
-        Iterator<LineInterface> backwardIteratorLeft =
+        Iterator<LineInterface> backwardIterator =
                 ((LinkedList<LineInterface>)listTable).descendingIterator();
-
-        Iterator<LineInterface> frontIteratorRight =
-                listTable.iterator();
-        Iterator<LineInterface> backwardIteratorRight =
-                ((LinkedList<LineInterface>)listTable).descendingIterator();
-
 
         LineInterface wall = null;
-        LineInterface headRight = frontIteratorRight.next();
-        LineInterface tailRight = backwardIteratorRight.next();
-        int size = rightTable.get(0).getValuableCellsCount();
-
-        while (frontIteratorLeft.hasNext() && backwardIteratorLeft.hasNext()) {
+        while (frontIterator.hasNext() && backwardIterator.hasNext()) {
             /*
              * итератор с головы списка
              */
-            LineInterface headLeft = frontIteratorLeft.next();
-
-            if (headLeft.equals(wall)) break;
-            //rightTableSearch(head, rightTable, requestedTableCollection, tableLine);
-
-
-            do {
-
-            } while(true);
-            if(headLeft.getId().compareTo(headRight.getId()) == 0) {
-                requestedTableCollection.add(tableLine
-                        .setParameters(LineCreator.createLine(headLeft, tableLine)));
-
-                headRight = frontIteratorLeft.next();
-
-            }
-
-
+            LineInterface head = frontIterator.next();
+            if (head.equals(wall)) break;
+            rightTableSearch(head, rightTable, requestedTableCollection, tableLine);
             /*
              * итератор с хвоста списка
              */
