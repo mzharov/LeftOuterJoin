@@ -1,6 +1,7 @@
 package ts.tsc.leftouterjoin.collectionfabric.lists;
 
 import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
+import ts.tsc.leftouterjoin.table.line.LineComparator;
 import ts.tsc.leftouterjoin.table.line.LineCreator;
 import ts.tsc.leftouterjoin.table.line.LineInterface;
 
@@ -109,8 +110,8 @@ public class ListFabricLinked extends ListFabric {
         /*
          * Сортировка обоих списков
          */
-        rightTable.sort(new ListComparator());
-        listTable.sort(new ListComparator());
+        rightTable.sort(new LineComparator());
+        listTable.sort(new LineComparator());
 
         Iterator<LineInterface> frontIterator =
                 listTable.iterator();

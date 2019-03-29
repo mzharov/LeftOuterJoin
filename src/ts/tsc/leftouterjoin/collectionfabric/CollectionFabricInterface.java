@@ -1,6 +1,7 @@
 package ts.tsc.leftouterjoin.collectionfabric;
 
 import ts.tsc.leftouterjoin.table.TableInterface;
+import ts.tsc.leftouterjoin.table.line.LineComparator;
 import ts.tsc.leftouterjoin.table.line.LineInterface;
 
 import java.util.Collection;
@@ -17,8 +18,18 @@ import java.util.stream.Stream;
 public interface CollectionFabricInterface extends TableInterface {
     void add(LineInterface stroke);
     CollectionFabricInterface setCollection(CollectionFabricInterface table);
-    String[] toStringArray();
     Stream<LineInterface> getTableStream();
+
+    /**
+     * Преобразование содержимого контейнеров в отсортированный массив строк
+     * @return отсортированный массив строк
+     */
+    default String[] toStringArray() {
+        return getTableStream()
+                .sorted(new LineComparator())
+                .map(LineInterface::toString)
+                .toArray(String[]::new);
+    }
 
     /**
      * Преобразование к Collection<LineInterface>

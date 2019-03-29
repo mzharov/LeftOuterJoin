@@ -4,7 +4,10 @@ import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
 import ts.tsc.leftouterjoin.table.line.LineCreator;
 import ts.tsc.leftouterjoin.table.line.LineInterface;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -97,21 +100,6 @@ public class MapFabric implements CollectionFabricInterface {
         return requestedTableCollection;
     }
 
-
-    /**
-     * Преобразование таблицы в сортированный по ключу массив строк
-     */
-
-    @Override
-    public String[] toStringArray() {
-        return mapTable.values()
-                .stream()
-                .flatMap(Collection::stream)
-                .sorted(Comparator.comparing(LineInterface::getId))
-                .map(LineInterface::toString)
-                .toArray(String[]::new);
-
-    }
 
     /**
      * Преобразование  Map<Integer, List<LineInterface>> в поток Stream<LineInterface>

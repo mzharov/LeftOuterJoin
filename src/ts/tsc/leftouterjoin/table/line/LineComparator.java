@@ -5,7 +5,7 @@ import java.util.Comparator;
 /**
  * Компаратор LineInterface для сравнения по ключу
  */
-class LineComparator implements Comparator<LineInterface> {
+public class LineComparator implements Comparator<LineInterface> {
 
     /**
      * Сравнение массивов строковых значений
@@ -44,7 +44,7 @@ class LineComparator implements Comparator<LineInterface> {
     @Override
     public int compare(LineInterface firstElement, LineInterface secondElement) {
         int compare = compareKeys(firstElement.getId(), secondElement.getId());
-        if(!(compare == 0)) {
+        if(compare == 0) {
             return compareValues(firstElement.getValues(), secondElement.getValues());
         } else {
             return  compare;

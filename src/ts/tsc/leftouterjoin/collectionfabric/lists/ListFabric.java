@@ -6,7 +6,6 @@ import ts.tsc.leftouterjoin.table.line.LineInterface;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,17 +62,6 @@ public class ListFabric implements CollectionFabricInterface {
         }
 
         return requestedTableCollection;
-    }
-
-    /**
-     * Преобразование таблицы в сортированный по ключу массив строк
-     */
-    @Override
-    public String[] toStringArray() {
-        return listTable.stream()
-                .sorted(Comparator.comparing(LineInterface::getId))
-                .map(LineInterface::toString)
-                .toArray(String[]::new);
     }
 
     /**
