@@ -8,6 +8,7 @@ import ts.tsc.leftouterjoin.table.line.LineInterface;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 public class ListFabricLinked extends ListFabric {
@@ -113,61 +114,53 @@ public class ListFabricLinked extends ListFabric {
         rightTable.sort(new LineComparator());
         listTable.sort(new LineComparator());
 
-        Iterator<LineInterface> frontIteratorLeft =
-                listTable.iterator();
-        Iterator<LineInterface> backwardIteratorLeft =
-                ((LinkedList<LineInterface>)listTable).descendingIterator();
+        Iterator<LineInterface> frontIteratorLeft = listTable.iterator();
+        ListIterator<LineInterface> frontIteratorRight = rightTable.listIterator();
 
-        Iterator<LineInterface> frontIteratorRight = rightTable.iterator();
-        Iterator<LineInterface> backwardIteratorRight = rightTable.descendingIterator();
-
-
-        LineInterface wall = null;
         LineInterface headRight = frontIteratorRight.next();
-        LineInterface tailRight = backwardIteratorRight.next();
-        int size = rightTable.get(0).getValuableCellsCount();
+        int headLeftCopy = -1;
 
-        while (frontIteratorLeft.hasNext() && backwardIteratorLeft.hasNext()) {
+        int size = rightTable.get(0).getValuableCellsCount();
+        int index = 0;
+
+        while (frontIteratorLeft.hasNext()) {
             /*
              * итератор с головы списка
              */
             LineInterface headLeft = frontIteratorLeft.next();
 
-            if (headLeft.equals(wall)) break;
-            //rightTableSearch(head, rightTable, requestedTableCollection, tableLine);
-
-            int rightIterator = 0;
-            Iterator<LineInterface> headRightDuplicate = rightTable.iterator();
-            int position = frontIteratorRight.nextIn
+            boolean exist = false;
 
 
-            do {
-                if(headLeft.getId().compareTo(headRight.getId()) == 0) {
-                    requestedTableCollection.add(tableLine
-                            .setParameters(LineCreator.createLine(headLeft, tableLine)));
+            if(headLeftCopy != -1) {
+                if(headLeft.getId().compareTo(headLeftCopy) == 0) {
+                    frontIteratorRight = rightTable.listIterator(index-1);
                     headRight = frontIteratorRight.next();
-                    ++rightIterator;
-                } else {
-                    break;
                 }
-            } while(true);
-
-            Iterator<LineInterface> headRightDuplicate = rightTable.iterator();
-            while (rightIterator > 0) {
-
-                headRightDuplicate.next();
-
-                --rightIterator;
             }
 
+            boolean loop = true;
 
-            /*
-             * итератор с хвоста списка
-             */
-            LineInterface end = backwardIterator.next();
-            if (head.equals(end)) break; // если итераторы указывают на один элемент, выходим из цикла
-            rightTableSearch(end, rightTable, requestedTableCollection, tableLine);
-            wall = end;
+            index = frontIteratorRight.nextIndex();
+
+            while (loop && frontIteratorRight.hasNext()) {
+                if(headLeft.getId().compareTo(headRight.getId()) == 0) {
+                    requestedTableCollection.add(tableLine
+                            .setParameters(LineCreator.createLine(headLeft, headRight)));
+                    headRight = frontIteratorRight.next();
+                    exist = true;
+                } else if(headLeft.getId().compareTo(headRight.getId()) > 0) {
+                    headRight = frontIteratorRight.next();
+                } else {loop = false;}
+            }
+
+            if(!exist) {
+                requestedTableCollection.add(tableLine
+                        .setParameters(LineCreator.createNotJoinedLine(headLeft, size)));
+            }
+
+            headLeftCopy = headLeft.getId();
+            System.out.println("H " + headLeftCopy);
         }
 
         return requestedTableCollection;
