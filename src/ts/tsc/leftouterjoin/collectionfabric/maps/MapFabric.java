@@ -7,6 +7,7 @@ import ts.tsc.leftouterjoin.table.line.LineInterface;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MapFabric implements CollectionFabricInterface {
     private Map<Integer, List<LineInterface>> mapTable;
@@ -54,6 +55,8 @@ public class MapFabric implements CollectionFabricInterface {
                                                      LineInterface tableLine) {
 
         CollectionFabricInterface requestedTableCollection = new MapFabric(new ConcurrentHashMap<>());
+        Map<Integer, List<LineInterface>> leftTable = getMap(toJoinTableCollection);
+
         /*
          * Цикл по левой таблице для поиска ключей в правой
          */
@@ -67,7 +70,6 @@ public class MapFabric implements CollectionFabricInterface {
             for (LineInterface leftMapValue : leftMapTableValues) {
 
                 List<LineInterface> rightMapValues;
-                Map<Integer, List<LineInterface>> leftTable = toJoinTableCollection.getMapCollection();
                 /*
                  * Если найден совпадающий ключ, то для всех значений с
                  * тем же ключом из правой таблицы совершается объединение
@@ -111,11 +113,30 @@ public class MapFabric implements CollectionFabricInterface {
 
     }
 
+    /**
+     * Преобразование  Map<Integer, List<LineInterface>> в поток Stream<LineInterface>
+     * @return поток значений LineInterface
+     */
     @Override
-    public Map<Integer, List<LineInterface>> getMapCollection() {
-        return mapTable;
+    public Stream<LineInterface> getTableStream() {
+        return mapTable.values().stream().flatMap(Collection::stream);
     }
 
+    /**
+     * Преобразование значений полученной таблицы к Map<Integer, List<LineInterface>>
+     * @param table Объект, содержащий таблицу неопределенного типа
+     * @return если объект тиипа MapFabric возвращаем его контейнер без преобразования,
+     * иначе приводим к типу Map
+     */
+    private Map<Integer, List<LineInterface>> getMap(CollectionFabricInterface table) {
+        if(table.getClass() == MapFabric.class) {
+            return ((MapFabric) table).getMapTable();
+        } else {
+            return table.getMap(Collectors.groupingBy(
+                    LineInterface::getId,  Collectors.mapping(
+                            LineInterface::getLine, Collectors.toList())));
+        }
+    }
 
     /**
      * Преобразование фабрики одной коллекции в
@@ -123,31 +144,20 @@ public class MapFabric implements CollectionFabricInterface {
      * @param table исходная фабрика
      * @return преобразованная фабрика
      */
-
     @Override
     public CollectionFabricInterface setCollection(CollectionFabricInterface table) {
-        mapTable = table.getMapCollection();
+        mapTable = table.getMap(Collectors.groupingBy(
+                LineInterface::getId,  Collectors.mapping(
+                        LineInterface::getLine, Collectors.toList())));
         return this;
-    }
-
-    @Override
-    public List<LineInterface> getLinkedListCollection() {
-        return mapTable.values()
-                .stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toCollection(LinkedList::new));
-    }
-
-    @Override
-    public List<LineInterface> getArrayListCollection() {
-        return mapTable.values()
-                .stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
     public boolean isEmpty() {
         return mapTable.isEmpty();
+    }
+
+    private Map<Integer, List<LineInterface>> getMapTable() {
+        return this.mapTable;
     }
 }

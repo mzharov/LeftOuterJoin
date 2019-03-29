@@ -53,4 +53,9 @@ public class TableLine implements LineInterface{
     public String[] getValues() {
         return values;
     }
+
+    @Override
+    public LineInterface getLine() {
+        return this;
+    }
 }

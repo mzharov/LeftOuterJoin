@@ -4,8 +4,12 @@ import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
 import ts.tsc.leftouterjoin.table.line.LineCreator;
 import ts.tsc.leftouterjoin.table.line.LineInterface;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Фабрика для представления таблиц в виде LinkedList
@@ -17,6 +21,7 @@ public class ListFabric implements CollectionFabricInterface {
     public ListFabric(List<LineInterface> listTable) {
         this.listTable = listTable;
     }
+
     /**
      * Левостороннее объединение
      * @param toJoinTableCollection правая таблица
@@ -29,16 +34,17 @@ public class ListFabric implements CollectionFabricInterface {
 
         //Создаем фабрику того же типа, что и текущая
         ListFabric requestedTableCollection = new ListFabric(new ArrayList<>());
+        List<LineInterface> toJoinList = ((ArrayList<LineInterface>)getList(toJoinTableCollection));
 
         for (LineInterface leftTable : listTable) {
 
             boolean idFound = false;
-            int size = toJoinTableCollection.getArrayListCollection().get(0).getValuableCellsCount();
+            int size = toJoinList.get(0).getValuableCellsCount();
 
             /*
              * Ищем во второй таблице строки с таким же ключом
              */
-            for (LineInterface rightTable : toJoinTableCollection.getArrayListCollection()) {
+            for (LineInterface rightTable : toJoinList) {
                 if(leftTable.getId().compareTo(rightTable.getId())==0) {
                     requestedTableCollection.add(tableLine
                             .setParameters(LineCreator.createLine(leftTable, rightTable)));
@@ -58,7 +64,6 @@ public class ListFabric implements CollectionFabricInterface {
 
         return requestedTableCollection;
     }
-
 
     /**
      * Преобразование таблицы в сортированный по ключу массив строк
@@ -80,22 +85,6 @@ public class ListFabric implements CollectionFabricInterface {
         listTable.add(stroke);
     }
 
-    @Override
-    public List<LineInterface> getArrayListCollection() {
-        return listTable;
-    }
-
-    @Override
-    public List<LineInterface> getLinkedListCollection() {
-        return new LinkedList<>(listTable);
-    }
-
-    @Override
-    public Map<Integer, List<LineInterface>> getMapCollection() {
-        return  listTable.stream()
-                .collect(Collectors.groupingBy(LineInterface::getId));
-    }
-
     /**
      * Преобразование фабрики одной коллекции в
      * фабрику другой
@@ -104,12 +93,35 @@ public class ListFabric implements CollectionFabricInterface {
      */
     @Override
     public CollectionFabricInterface setCollection(CollectionFabricInterface table) {
-        listTable = table.getArrayListCollection();
+        listTable = (ArrayList<LineInterface>) getList(table);
         return this;
+    }
+
+    /**
+     * Преобразование значений полученной таблицы к Collection<LineInterface>
+     * @param table Объект, содержащий таблицу неопределенного типа
+     * @return если объект тиипа MapFabric возвращаем его контейнер без преобразования,
+     * иначе приводим к типу List
+     */
+    private Collection<LineInterface> getList(CollectionFabricInterface table) {
+        if(table.getClass() == ListFabric.class) {
+            return ((ListFabric)table).getListTable();
+        } else  {
+            return table.getCollection(Collectors.toCollection(ArrayList::new));
+        }
     }
 
     @Override
     public boolean isEmpty() {
         return listTable.isEmpty();
+    }
+
+    @Override
+    public Stream<LineInterface> getTableStream() {
+        return listTable.stream();
+    }
+
+    List<LineInterface> getListTable() {
+        return this.listTable;
     }
 }

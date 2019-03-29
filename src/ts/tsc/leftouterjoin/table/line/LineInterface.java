@@ -11,4 +11,5 @@ public interface LineInterface {
     String[] getValues();
     TableLine setParameters(List<Object> parameters);
     String toString();
+    LineInterface getLine();
 }

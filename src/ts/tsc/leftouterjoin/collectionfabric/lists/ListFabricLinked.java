@@ -4,8 +4,10 @@ import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
 import ts.tsc.leftouterjoin.table.line.LineCreator;
 import ts.tsc.leftouterjoin.table.line.LineInterface;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 public class ListFabricLinked extends ListFabric {
 
@@ -103,8 +105,7 @@ public class ListFabricLinked extends ListFabric {
          * преобразование полученной таблицы к тому же типу, что и левая
          */
         ListFabric requestedTableCollection = new ListFabric(new LinkedList<>());
-        LinkedList<LineInterface> rightTable = (LinkedList<LineInterface>) toJoinTableCollection
-                .getLinkedListCollection();
+        LinkedList<LineInterface> rightTable = (LinkedList<LineInterface>) getList(toJoinTableCollection);
         /*
          * Сортировка обоих списков
          */
@@ -142,10 +143,23 @@ public class ListFabricLinked extends ListFabric {
      * @param table исходная фабрика
      * @return преобразованная фабрика
      */
-
     @Override
     public CollectionFabricInterface setCollection(CollectionFabricInterface table) {
-        listTable = table.getLinkedListCollection();
+        listTable = (LinkedList<LineInterface>) getList(table);
         return this;
+    }
+
+    /**
+     * Преобразование значений полученной таблицы к LinkedList<LineInterface>
+     * @param table Объект, содержащий таблицу неопределенного типа
+     * @return если объект тиипа MapFabric возвращаем его контейнер без преобразования,
+     * иначе приводип к типу LinkedList
+     */
+    private Collection<LineInterface> getList(CollectionFabricInterface table) {
+        if(table.getClass() == ListFabricLinked.class) {
+            return ((ListFabricLinked)table).getListTable();
+        } else  {
+            return table.getCollection(Collectors.toCollection(LinkedList::new));
+        }
     }
 }
