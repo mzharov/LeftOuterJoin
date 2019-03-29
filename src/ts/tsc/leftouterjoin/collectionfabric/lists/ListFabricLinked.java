@@ -118,10 +118,8 @@ public class ListFabricLinked extends ListFabric {
         Iterator<LineInterface> backwardIteratorLeft =
                 ((LinkedList<LineInterface>)listTable).descendingIterator();
 
-        Iterator<LineInterface> frontIteratorRight =
-                listTable.iterator();
-        Iterator<LineInterface> backwardIteratorRight =
-                ((LinkedList<LineInterface>)listTable).descendingIterator();
+        Iterator<LineInterface> frontIteratorRight = rightTable.iterator();
+        Iterator<LineInterface> backwardIteratorRight = rightTable.descendingIterator();
 
 
         LineInterface wall = null;
@@ -138,16 +136,28 @@ public class ListFabricLinked extends ListFabric {
             if (headLeft.equals(wall)) break;
             //rightTableSearch(head, rightTable, requestedTableCollection, tableLine);
 
+            int rightIterator = 0;
+            Iterator<LineInterface> headRightDuplicate = rightTable.iterator();
+            int position = frontIteratorRight.nextIn
+
 
             do {
-
+                if(headLeft.getId().compareTo(headRight.getId()) == 0) {
+                    requestedTableCollection.add(tableLine
+                            .setParameters(LineCreator.createLine(headLeft, tableLine)));
+                    headRight = frontIteratorRight.next();
+                    ++rightIterator;
+                } else {
+                    break;
+                }
             } while(true);
-            if(headLeft.getId().compareTo(headRight.getId()) == 0) {
-                requestedTableCollection.add(tableLine
-                        .setParameters(LineCreator.createLine(headLeft, tableLine)));
 
-                headRight = frontIteratorLeft.next();
+            Iterator<LineInterface> headRightDuplicate = rightTable.iterator();
+            while (rightIterator > 0) {
 
+                headRightDuplicate.next();
+
+                --rightIterator;
             }
 
 
