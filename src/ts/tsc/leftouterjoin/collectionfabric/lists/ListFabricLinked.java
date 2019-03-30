@@ -17,81 +17,6 @@ public class ListFabricLinked extends ListFabric {
         super(new LinkedList<>());
     }
 
-    private int doCompare(LineInterface head,
-                          LineInterface leftTable,
-                          ListFabric requestedTableCollection,
-                          LineInterface tableLine) {
-
-        if(leftTable.getId().compareTo(head.getId())== 0) {
-            requestedTableCollection.add(tableLine
-                    .setParameters(LineCreator.createLine(leftTable, head)));
-            return 1;
-        }
-        return 0;
-    }
-    private void rightTableSearch(final LineInterface leftTable,
-                                  final LinkedList<LineInterface> rightTable,
-                                  ListFabric requestedTableCollection,
-                                  LineInterface tableLine) {
-        /*
-         * Итераторы для прохода с начала и с конца по правой таблице
-         */
-        Iterator<LineInterface> frontIterator =
-                rightTable.iterator();
-        Iterator<LineInterface> backwardIterator =
-                rightTable.descendingIterator();
-
-        int size = rightTable.get(0).getValuableCellsCount();
-
-        if(rightTable.peek() == null) return;
-        else {
-            /*
-             * Если ключ из левой таблицы не входит
-             * в диапазон значений в правой таблице,
-             * то переходим к следующей итерации
-             */
-            int id = rightTable.peek().getId();
-            if(leftTable.getId().compareTo(id) < 0
-                    || leftTable.getId().compareTo(rightTable.getLast().getId()) > 0) {
-                requestedTableCollection.add(tableLine
-                        .setParameters(LineCreator.createNotJoinedLine(leftTable, size)));
-                return;
-            }
-        }
-        /*
-         * Проходим по второй таблице с обеих сторон в поисках такого же ключа
-         */
-        int idFound = 0;
-
-        //Переменная для хранения указателя с хвоста
-        LineInterface wall = null;
-
-        while (frontIterator.hasNext() && backwardIterator.hasNext()) {
-            /*
-             * Если найдено совпадение для правого итератора
-             */
-            LineInterface head = frontIterator.next();
-            if (head.equals(wall)) break; // если итераторы сошлись, выходим из цикла
-            idFound +=doCompare(head, leftTable, requestedTableCollection, tableLine);
-
-            LineInterface end = backwardIterator.next();
-            if (head.equals(end)) break; // если итераторы сошлись, выходим из цикла
-            /*
-             * Если найдено совпадение для левого итератора
-             */
-            idFound +=doCompare(end, leftTable, requestedTableCollection, tableLine);
-            wall = end;
-        }
-        /*
-         * Если совпадений не найдено недостающие строки заполняются "null"
-         */
-        if(idFound <= 0) {
-            requestedTableCollection.add(tableLine
-                    .setParameters(LineCreator.createNotJoinedLine(leftTable, size)));
-        }
-
-    }
-
     /**
      * Левостороннее объединение
      * @param toJoinTableCollection правая таблица
@@ -119,7 +44,6 @@ public class ListFabricLinked extends ListFabric {
 
         LineInterface headRight = frontIteratorRight.next();
         int headLeftCopy = -1;
-
         int size = rightTable.get(0).getValuableCellsCount();
         int index = 0;
 
@@ -130,7 +54,6 @@ public class ListFabricLinked extends ListFabric {
             LineInterface headLeft = frontIteratorLeft.next();
 
             boolean exist = false;
-
 
             if(headLeftCopy != -1) {
                 if(headLeft.getId().compareTo(headLeftCopy) == 0) {
@@ -160,7 +83,6 @@ public class ListFabricLinked extends ListFabric {
             }
 
             headLeftCopy = headLeft.getId();
-            System.out.println("H " + headLeftCopy);
         }
 
         return requestedTableCollection;
