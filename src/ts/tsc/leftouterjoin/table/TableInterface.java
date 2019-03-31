@@ -1,10 +1,10 @@
 package ts.tsc.leftouterjoin.table;
 
-import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
-import ts.tsc.leftouterjoin.table.line.LineInterface;
+import ts.tsc.leftouterjoin.tablecontainers.ContainerTableInterface;
+import ts.tsc.leftouterjoin.table.line.TableLineInterface;
 
 public interface TableInterface {
-    CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection,
-                                              LineInterface tableLine);
+    ContainerTableInterface doLeftOuterJoin(ContainerTableInterface toJoinTableCollection,
+                                            TableLineInterface tableLine);
     boolean isEmpty();
 }

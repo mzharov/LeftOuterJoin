@@ -5,11 +5,11 @@ import java.util.List;
 /**
  * Интерфейс строки таблицы
  */
-public interface LineInterface {
+public interface TableLineInterface {
     Integer getId();
     int getValuableCellsCount();
     String[] getValues();
     TableLine setParameters(List<Object> parameters);
     String toString();
-    LineInterface getLine();
+    TableLineInterface getLine();
 }

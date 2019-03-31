@@ -1,8 +1,8 @@
-package ts.tsc.leftouterjoin.collectionfabric.maps;
+package ts.tsc.leftouterjoin.tablecontainers.maps;
 
-import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
+import ts.tsc.leftouterjoin.tablecontainers.ContainerTableInterface;
 import ts.tsc.leftouterjoin.table.line.LineCreator;
-import ts.tsc.leftouterjoin.table.line.LineInterface;
+import ts.tsc.leftouterjoin.table.line.TableLineInterface;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -12,10 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MapFabric implements CollectionFabricInterface {
-    private Map<Integer, List<LineInterface>> mapTable;
+public class MapTable implements ContainerTableInterface {
+    private Map<Integer, List<TableLineInterface>> mapTable;
 
-    public MapFabric(Map<Integer, List<LineInterface>> mapTable) {
+    public MapTable(Map<Integer, List<TableLineInterface>> mapTable) {
         this.mapTable = mapTable;
     }
 
@@ -26,9 +26,9 @@ public class MapFabric implements CollectionFabricInterface {
      */
 
     @Override
-    public void add(LineInterface stroke) {
+    public void add(TableLineInterface stroke) {
 
-        List<LineInterface> mapTableValues;
+        List<TableLineInterface> mapTableValues;
         if(mapTable.containsKey(stroke.getId())) {
             mapTableValues = mapTable.get(stroke.getId());
 
@@ -54,25 +54,25 @@ public class MapFabric implements CollectionFabricInterface {
      */
 
     @Override
-    public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection,
-                                                     LineInterface tableLine) {
+    public ContainerTableInterface doLeftOuterJoin(ContainerTableInterface toJoinTableCollection,
+                                                   TableLineInterface tableLine) {
 
-        CollectionFabricInterface requestedTableCollection = new MapFabric(new ConcurrentHashMap<>());
-        Map<Integer, List<LineInterface>> leftTable = getMap(toJoinTableCollection);
+        ContainerTableInterface requestedTableCollection = new MapTable(new ConcurrentHashMap<>());
+        Map<Integer, List<TableLineInterface>> leftTable = getMap(toJoinTableCollection);
 
         /*
          * Цикл по левой таблице для поиска ключей в правой
          */
-        for (Map.Entry<Integer, List<LineInterface>> leftTableEntry : mapTable.entrySet()) {
+        for (Map.Entry<Integer, List<TableLineInterface>> leftTableEntry : mapTable.entrySet()) {
 
             Integer rightMapTableKey = (leftTableEntry.getKey());
-            List<LineInterface> leftMapTableValues = leftTableEntry.getValue();
+            List<TableLineInterface> leftMapTableValues = leftTableEntry.getValue();
             /*
              * Проходим по списку значений Map с одинаковыми ключами
              */
-            for (LineInterface leftMapValue : leftMapTableValues) {
+            for (TableLineInterface leftMapValue : leftMapTableValues) {
 
-                List<LineInterface> rightMapValues;
+                List<TableLineInterface> rightMapValues;
                 /*
                  * Если найден совпадающий ключ, то для всех значений с
                  * тем же ключом из правой таблицы совершается объединение
@@ -80,7 +80,7 @@ public class MapFabric implements CollectionFabricInterface {
                 if (leftTable.containsKey(rightMapTableKey)) {
                     rightMapValues = leftTable.get(rightMapTableKey);
 
-                    for (LineInterface rightLineValue : rightMapValues) {
+                    for (TableLineInterface rightLineValue : rightMapValues) {
                         requestedTableCollection.add(tableLine
                                 .setParameters(LineCreator.createLine(leftMapValue, rightLineValue)));
                     }
@@ -102,27 +102,27 @@ public class MapFabric implements CollectionFabricInterface {
 
 
     /**
-     * Преобразование  Map<Integer, List<LineInterface>> в поток Stream<LineInterface>
-     * @return поток значений LineInterface
+     * Преобразование  Map<Integer, List<TableLineInterface>> в поток Stream<TableLineInterface>
+     * @return поток значений TableLineInterface
      */
     @Override
-    public Stream<LineInterface> getTableStream() {
+    public Stream<TableLineInterface> getTableStream() {
         return mapTable.values().stream().flatMap(Collection::stream);
     }
 
     /**
-     * Преобразование значений полученной таблицы к Map<Integer, List<LineInterface>>
+     * Преобразование значений полученной таблицы к Map<Integer, List<TableLineInterface>>
      * @param table Объект, содержащий таблицу неопределенного типа
-     * @return если объект тиипа MapFabric возвращаем его контейнер без преобразования,
+     * @return если объект тиипа MapTable возвращаем его контейнер без преобразования,
      * иначе приводим к типу Map
      */
-    private Map<Integer, List<LineInterface>> getMap(CollectionFabricInterface table) {
-        if(table.getClass() == MapFabric.class) {
-            return ((MapFabric) table).getMapTable();
+    private Map<Integer, List<TableLineInterface>> getMap(ContainerTableInterface table) {
+        if(table.getClass() == MapTable.class) {
+            return ((MapTable) table).getMapTable();
         } else {
             return table.getMap(Collectors.groupingBy(
-                    LineInterface::getId,  Collectors.mapping(
-                            LineInterface::getLine, Collectors.toList())));
+                    TableLineInterface::getId,  Collectors.mapping(
+                            TableLineInterface::getLine, Collectors.toList())));
         }
     }
 
@@ -133,10 +133,10 @@ public class MapFabric implements CollectionFabricInterface {
      * @return преобразованная фабрика
      */
     @Override
-    public CollectionFabricInterface setCollection(CollectionFabricInterface table) {
+    public ContainerTableInterface setCollection(ContainerTableInterface table) {
         mapTable = table.getMap(Collectors.groupingBy(
-                LineInterface::getId,  Collectors.mapping(
-                        LineInterface::getLine, Collectors.toList())));
+                TableLineInterface::getId,  Collectors.mapping(
+                        TableLineInterface::getLine, Collectors.toList())));
         return this;
     }
 
@@ -145,7 +145,7 @@ public class MapFabric implements CollectionFabricInterface {
         return mapTable.isEmpty();
     }
 
-    private Map<Integer, List<LineInterface>> getMapTable() {
+    private Map<Integer, List<TableLineInterface>> getMapTable() {
         return this.mapTable;
     }
 }

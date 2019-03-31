@@ -10,14 +10,14 @@ import java.util.List;
 public class LineCreator {
     /**
      * Создание экземпляра строки, для которой не было найдено соответствие в правой таблице
-     * @param lineInterfaceLeft интерфейс табличного представления
+     * @param TableLineInterfaceLeft интерфейс табличного представления
      * @param size количество ячеек, которые не являются ключом
      * @return Список объектов дял добавления в таблицу
      */
-    public static LinkedList<Object> createNotJoinedLine(LineInterface lineInterfaceLeft, int size) {
+    public static LinkedList<Object> createNotJoinedLine(TableLineInterface TableLineInterfaceLeft, int size) {
         LinkedList<Object> values = new LinkedList<>();
-        values.add(lineInterfaceLeft.getId());
-        values.addAll(Arrays.asList(lineInterfaceLeft.getValues()));
+        values.add(TableLineInterfaceLeft.getId());
+        values.addAll(Arrays.asList(TableLineInterfaceLeft.getValues()));
         for(int iterator = 0; iterator < size; iterator++) {
             values.add("null");
         }
@@ -30,11 +30,11 @@ public class LineCreator {
      * @param lineTableSecond интерфейс право таблицы
      * @return Список объектов дял добавления в таблицу
      */
-    public static List<Object> createLine(LineInterface lineTableFirst, LineInterface lineTableSecond) {
-        List<Object> tableParameters = new LinkedList<>();
-        tableParameters.add(lineTableFirst.getId());
-        tableParameters.addAll(Arrays.asList(lineTableFirst.getValues()));
-        tableParameters.addAll(Arrays.asList(lineTableSecond.getValues()));
-        return tableParameters;
+    public static List<Object> createLine(TableLineInterface lineTableFirst, TableLineInterface lineTableSecond) {
+        List<Object> TableTableLineInterface = new LinkedList<>();
+        TableTableLineInterface.add(lineTableFirst.getId());
+        TableTableLineInterface.addAll(Arrays.asList(lineTableFirst.getValues()));
+        TableTableLineInterface.addAll(Arrays.asList(lineTableSecond.getValues()));
+        return TableTableLineInterface;
     }
 }

@@ -3,9 +3,9 @@ package ts.tsc.leftouterjoin.table.line;
 import java.util.Comparator;
 
 /**
- * Компаратор LineInterface для сравнения по ключу
+ * Компаратор TableLineInterface для сравнения по ключу
  */
-public class LineComparator implements Comparator<LineInterface> {
+public class LineComparator implements Comparator<TableLineInterface> {
 
     /**
      * Сравнение массивов строковых значений
@@ -35,14 +35,14 @@ public class LineComparator implements Comparator<LineInterface> {
     }
 
     /**
-     * Сравнение двух строк LineInterface:
+     * Сравнение двух строк TableLineInterface:
      * сначала по ключу, затем по значениям, если ключи одинаковые
      * @param firstElement первая строка
      * @param secondElement вторая строка
      * @return 0, если входные строк полностью идентичны, иначе зависит от сравнения ключей и значений
      */
     @Override
-    public int compare(LineInterface firstElement, LineInterface secondElement) {
+    public int compare(TableLineInterface firstElement, TableLineInterface secondElement) {
         int compare = compareKeys(firstElement.getId(), secondElement.getId());
         if(compare == 0) {
             return compareValues(firstElement.getValues(), secondElement.getValues());

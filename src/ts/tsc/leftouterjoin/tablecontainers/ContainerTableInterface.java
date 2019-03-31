@@ -1,8 +1,8 @@
-package ts.tsc.leftouterjoin.collectionfabric;
+package ts.tsc.leftouterjoin.tablecontainers;
 
 import ts.tsc.leftouterjoin.table.TableInterface;
 import ts.tsc.leftouterjoin.table.line.LineComparator;
-import ts.tsc.leftouterjoin.table.line.LineInterface;
+import ts.tsc.leftouterjoin.table.line.TableLineInterface;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,10 +15,10 @@ import java.util.stream.Stream;
  * Интерфейс фабрик с основными методами,
  * которые должны быть реализованы в фабриках
  */
-public interface CollectionFabricInterface extends TableInterface {
-    void add(LineInterface stroke);
-    CollectionFabricInterface setCollection(CollectionFabricInterface table);
-    Stream<LineInterface> getTableStream();
+public interface ContainerTableInterface extends TableInterface {
+    void add(TableLineInterface stroke);
+    ContainerTableInterface setCollection(ContainerTableInterface table);
+    Stream<TableLineInterface> getTableStream();
 
     /**
      * Преобразование содержимого контейнеров в отсортированный массив строк
@@ -27,30 +27,30 @@ public interface CollectionFabricInterface extends TableInterface {
     default String[] toStringArray() {
         return getTableStream()
                 .sorted(new LineComparator())
-                .map(LineInterface::toString)
+                .map(TableLineInterface::toString)
                 .toArray(String[]::new);
     }
 
     /**
-     * Преобразование к Collection<LineInterface>
+     * Преобразование к Collection<TableLineInterface>
      * @param collector интерфейс, описывающий тип желаемой коллекции
      * @param <A> аккумулятор
-     * @return запрошенный контейнер  в виде интерфейса Collection<LineInterface>
+     * @return запрошенный контейнер  в виде интерфейса Collection<TableLineInterface>
      */
-    default <A> Collection<LineInterface> getCollection(Collector<? super LineInterface, A,
-            Collection<LineInterface>> collector) {
+    default <A> Collection<TableLineInterface> getCollection(Collector<? super TableLineInterface, A,
+            Collection<TableLineInterface>> collector) {
         return getTableStream()
                 .collect(collector);
     }
 
     /**
-     * Преобразование к Map<Integer, List<LineInterface>>
+     * Преобразование к Map<Integer, List<TableLineInterface>>
      * @param collector интерфейс, описывающий тип желаемой коллекции
      * @param <A> аккумулятор
-     * @return запрошенный контейнер  в виде интерфейса Map<Integer, List<LineInterface>>
+     * @return запрошенный контейнер  в виде интерфейса Map<Integer, List<TableLineInterface>>
      */
-    default <A> Map<Integer, List<LineInterface>> getMap(Collector<? super LineInterface, A,
-            Map<Integer, List<LineInterface>>> collector) {
+    default <A> Map<Integer, List<TableLineInterface>> getMap(Collector<? super TableLineInterface, A,
+            Map<Integer, List<TableLineInterface>>> collector) {
         return getTableStream()
                 .collect(collector);
     }
