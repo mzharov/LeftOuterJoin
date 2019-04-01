@@ -2,8 +2,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import ts.tsc.leftouterjoin.table.line.LineComparator;
-import ts.tsc.leftouterjoin.table.line.LineInterface;
 import ts.tsc.leftouterjoin.table.line.TableLine;
+import ts.tsc.leftouterjoin.table.line.TableLineInterface;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -17,8 +17,8 @@ import static org.hamcrest.CoreMatchers.is;
  */
 public class CompareJUnit4 extends Assert {
 
-    private List<LineInterface> sortedList;
-    private List<LineInterface> toSortList;
+    private List<TableLineInterface> sortedList;
+    private List<TableLineInterface> toSortList;
 
     @Before
     public void setUp() {
@@ -39,12 +39,12 @@ public class CompareJUnit4 extends Assert {
     @Test
     public void testLineComparator() {
 
-        Iterator<LineInterface> toSortIterator = toSortList.iterator();
-        Iterator<LineInterface> sortedIterator = sortedList.iterator();
+        Iterator<TableLineInterface> toSortIterator = toSortList.iterator();
+        Iterator<TableLineInterface> sortedIterator = sortedList.iterator();
 
         while (toSortIterator.hasNext() && sortedIterator.hasNext()) {
-            LineInterface toSort = toSortIterator.next();
-            LineInterface sorted = sortedIterator.next();
+            TableLineInterface toSort = toSortIterator.next();
+            TableLineInterface sorted = sortedIterator.next();
 
             assertThat(toSort.getId(), is(sorted.getId()));
             assertThat(toSort.getValues(), is(sorted.getValues()));

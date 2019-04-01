@@ -1,8 +1,8 @@
-package ts.tsc.leftouterjoin.collectionfabric.lists;
+package ts.tsc.leftouterjoin.tablecontainers.lists;
 
-import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
 import ts.tsc.leftouterjoin.table.line.LineCreator;
-import ts.tsc.leftouterjoin.table.line.LineInterface;
+import ts.tsc.leftouterjoin.table.line.TableLineInterface;
+import ts.tsc.leftouterjoin.tablecontainers.ContainerTableInterface;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,11 +13,11 @@ import java.util.stream.Stream;
 /**
  * Фабрика для представления таблиц в виде LinkedList
  */
-public class ListFabric implements CollectionFabricInterface {
+public class ArrayListTable implements ContainerTableInterface {
 
-    List<LineInterface> listTable;
+    List<TableLineInterface> listTable;
 
-    public ListFabric(List<LineInterface> listTable) {
+    public ArrayListTable(List<TableLineInterface> listTable) {
         this.listTable = listTable;
     }
 
@@ -28,14 +28,14 @@ public class ListFabric implements CollectionFabricInterface {
      * @return объединенная таблицы
      */
     @Override
-    public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection,
-                                                     LineInterface tableLine){
+    public ContainerTableInterface doLeftOuterJoin(ContainerTableInterface toJoinTableCollection,
+                                                   TableLineInterface tableLine){
 
         //Создаем фабрику того же типа, что и текущая
-        ListFabric requestedTableCollection = new ListFabric(new ArrayList<>());
-        List<LineInterface> toJoinList = ((ArrayList<LineInterface>)getList(toJoinTableCollection));
+        ArrayListTable requestedTableCollection = new ArrayListTable(new ArrayList<>());
+        List<TableLineInterface> toJoinList = ((ArrayList<TableLineInterface>)getList(toJoinTableCollection));
 
-        for (LineInterface leftTable : listTable) {
+        for (TableLineInterface leftTable : listTable) {
 
             boolean idFound = false;
             int size = toJoinList.get(0).getValuableCellsCount();
@@ -43,7 +43,7 @@ public class ListFabric implements CollectionFabricInterface {
             /*
              * Ищем во второй таблице строки с таким же ключом
              */
-            for (LineInterface rightTable : toJoinList) {
+            for (TableLineInterface rightTable : toJoinList) {
                 if(leftTable.getId().compareTo(rightTable.getId())==0) {
                     requestedTableCollection.add(tableLine
                             .setParameters(LineCreator.createLine(leftTable, rightTable)));
@@ -69,7 +69,7 @@ public class ListFabric implements CollectionFabricInterface {
      * @param stroke интерфейс строки
      */
     @Override
-    public void add(LineInterface stroke) {
+    public void add(TableLineInterface stroke) {
         listTable.add(stroke);
     }
 
@@ -80,20 +80,20 @@ public class ListFabric implements CollectionFabricInterface {
      * @return преобразованная фабрика
      */
     @Override
-    public CollectionFabricInterface setCollection(CollectionFabricInterface table) {
-        listTable = (ArrayList<LineInterface>) getList(table);
+    public ContainerTableInterface setCollection(ContainerTableInterface table) {
+        listTable = (ArrayList<TableLineInterface>) getList(table);
         return this;
     }
 
     /**
-     * Преобразование значений полученной таблицы к Collection<LineInterface>
+     * Преобразование значений полученной таблицы к Collection<TableLineInterface>
      * @param table Объект, содержащий таблицу неопределенного типа
      * @return если объект тиипа MapFabric возвращаем его контейнер без преобразования,
      * иначе приводим к типу List
      */
-    private Collection<LineInterface> getList(CollectionFabricInterface table) {
-        if(table.getClass() == ListFabric.class) {
-            return ((ListFabric)table).getListTable();
+    private Collection<TableLineInterface> getList(ContainerTableInterface table) {
+        if(table.getClass() == ArrayListTable.class) {
+            return ((ArrayListTable)table).getListTable();
         } else  {
             return table.getCollection(Collectors.toCollection(ArrayList::new));
         }
@@ -105,11 +105,11 @@ public class ListFabric implements CollectionFabricInterface {
     }
 
     @Override
-    public Stream<LineInterface> getTableStream() {
+    public Stream<TableLineInterface> getTableStream() {
         return listTable.stream();
     }
 
-    List<LineInterface> getListTable() {
+    List<TableLineInterface> getListTable() {
         return this.listTable;
     }
 }

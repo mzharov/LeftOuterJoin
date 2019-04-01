@@ -2,7 +2,7 @@ package ts.tsc.leftouterjoin.table.line;
 
 import java.util.List;
 
-public class TableLine implements LineInterface{
+public class TableLine implements TableLineInterface{
     private Integer id;
     private String[] values;
     public TableLine(Integer id, String[] values) {
@@ -55,7 +55,7 @@ public class TableLine implements LineInterface{
     }
 
     @Override
-    public LineInterface getLine() {
+    public TableLineInterface getLine() {
         return this;
     }
 }

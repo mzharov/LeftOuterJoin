@@ -1,11 +1,11 @@
 package ts.tsc.leftouterjoin.joiner;
 
-import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
-import ts.tsc.leftouterjoin.collectionfabric.lists.ListFabric;
-import ts.tsc.leftouterjoin.collectionfabric.lists.ListFabricLinked;
-import ts.tsc.leftouterjoin.collectionfabric.maps.MapFabric;
 import ts.tsc.leftouterjoin.table.Table;
 import ts.tsc.leftouterjoin.table.line.TableLine;
+import ts.tsc.leftouterjoin.tablecontainers.ContainerTableInterface;
+import ts.tsc.leftouterjoin.tablecontainers.lists.ArrayListTable;
+import ts.tsc.leftouterjoin.tablecontainers.lists.LinkedListTable;
+import ts.tsc.leftouterjoin.tablecontainers.maps.MapTable;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,7 +27,7 @@ class LeftOuterJoin {
      * Вывод данных из табличного представления интерфейса
      * @param table интерфейс таблицы
      */
-    private static void printTable(String message, final CollectionFabricInterface table) {
+    private static void printTable(String message, final ContainerTableInterface table) {
         String[] tableArray = table.toStringArray();
 
         System.out.println(message);
@@ -40,7 +40,7 @@ class LeftOuterJoin {
      * Левосторонне объединение
      */
     private static void doLeftOuterJoin(String message) {
-        CollectionFabricInterface leftOuterJoin =
+        ContainerTableInterface leftOuterJoin =
                 firstTable.doLeftOuterJoin(secondTable.getTableCollection(), new TableLine());
         printTable(message, leftOuterJoin);
     }
@@ -49,8 +49,8 @@ class LeftOuterJoin {
      * @param firstTableCollection интерфейс первой коллекции
      * @param secondTableCollection интерфейс второй коллекции
      */
-    private static void transaction(String message, CollectionFabricInterface firstTableCollection,
-                                    CollectionFabricInterface secondTableCollection) {
+    private static void transaction(String message, ContainerTableInterface firstTableCollection,
+                                    ContainerTableInterface secondTableCollection) {
         firstTable.setNewCollection(firstTableCollection);
         secondTable.setNewCollection(secondTableCollection);
         doLeftOuterJoin(message);
@@ -67,8 +67,8 @@ class LeftOuterJoin {
         String pathToFirstTable = "firstTable";
         String pathToSecondTable = "secondTable";
 
-        firstTable = new Table(pathToFirstTable, new ListFabric(new ArrayList<>()));
-        secondTable = new Table(pathToSecondTable, new ListFabric(new ArrayList<>()));
+        firstTable = new Table(pathToFirstTable, new ArrayListTable(new ArrayList<>()));
+        secondTable = new Table(pathToSecondTable, new ArrayListTable(new ArrayList<>()));
 
         int fTableCondition = firstTable.readFile();
         int sTableCondition = secondTable.readFile();
@@ -92,10 +92,10 @@ class LeftOuterJoin {
             doLeftOuterJoin(message);
 
             message = "---Передача таблиц для хранения в LinkedList и их левосторонее объединение---";
-            transaction(message, new ListFabricLinked(), new ListFabricLinked());
+            transaction(message, new LinkedListTable(), new LinkedListTable());
 
             message = "---Передача таблиц для хранения в Map и их левосторонее объединение--";
-            transaction(message, new MapFabric(new ConcurrentHashMap<>()), new MapFabric(new ConcurrentHashMap<>()));
+            transaction(message, new MapTable(new ConcurrentHashMap<>()), new MapTable(new ConcurrentHashMap<>()));
 
         }
 

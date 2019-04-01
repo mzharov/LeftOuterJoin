@@ -11,7 +11,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="leftouterjoin" target="1.5" />
-      <module name="LeftOuterJoin" target="11" />
+      <module name="LeftOuterJoin" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

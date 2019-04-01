@@ -1,9 +1,9 @@
 package ts.tsc.leftouterjoin.table;
 
-import ts.tsc.leftouterjoin.collectionfabric.CollectionFabricInterface;
 import ts.tsc.leftouterjoin.table.line.LineFormatter;
-import ts.tsc.leftouterjoin.table.line.LineInterface;
 import ts.tsc.leftouterjoin.table.line.TableLine;
+import ts.tsc.leftouterjoin.table.line.TableLineInterface;
+import ts.tsc.leftouterjoin.tablecontainers.ContainerTableInterface;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class Table implements TableInterface{
     private final String filePath;
-    private CollectionFabricInterface tableCollection;
+    private ContainerTableInterface tableCollection;
 
     /**
      * Коды состояния чтения файла
@@ -24,7 +24,7 @@ public class Table implements TableInterface{
     public static final int SUCCESS = 1;
 
     public Table(String filePath,
-                 CollectionFabricInterface tableCollection) {
+                 ContainerTableInterface tableCollection) {
         this.filePath = filePath;
         this.tableCollection = tableCollection;
     }
@@ -33,7 +33,7 @@ public class Table implements TableInterface{
      * Преобразование одной коллекции в другую
      * @param newTableCollection тип, который нужно произвести преобразование
      */
-    public void setNewCollection(CollectionFabricInterface newTableCollection) {
+    public void setNewCollection(ContainerTableInterface newTableCollection) {
             tableCollection = newTableCollection.setCollection(tableCollection);
     }
 
@@ -85,11 +85,11 @@ public class Table implements TableInterface{
      * @return полученная таблица
      */
     @Override
-    public CollectionFabricInterface doLeftOuterJoin(CollectionFabricInterface toJoinTableCollection, LineInterface tableLine) {
+    public ContainerTableInterface doLeftOuterJoin(ContainerTableInterface toJoinTableCollection, TableLineInterface tableLine) {
         return tableCollection.doLeftOuterJoin(toJoinTableCollection, tableLine);
     }
 
-    public CollectionFabricInterface getTableCollection() {
+    public ContainerTableInterface getTableCollection() {
         return tableCollection;
     }
 
