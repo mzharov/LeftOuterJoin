@@ -58,39 +58,39 @@ public class MapTable implements ContainerTableInterface {
                                                    TableLineInterface tableLine) {
 
         ContainerTableInterface requestedTableCollection = new MapTable(new ConcurrentHashMap<>());
-        Map<Integer, List<TableLineInterface>> leftTable = getMap(toJoinTableCollection);
+        Map<Integer, List<TableLineInterface>> rightTable = getMap(toJoinTableCollection);
 
         /*
          * Цикл по левой таблице для поиска ключей в правой
          */
         for (Map.Entry<Integer, List<TableLineInterface>> leftTableEntry : mapTable.entrySet()) {
 
-            Integer rightMapTableKey = (leftTableEntry.getKey());
+            Integer leftMapTableKey = (leftTableEntry.getKey());
             List<TableLineInterface> leftMapTableValues = leftTableEntry.getValue();
             /*
              * Проходим по списку значений Map с одинаковыми ключами
              */
-            for (TableLineInterface leftMapValue : leftMapTableValues) {
+            for (TableLineInterface leftLineValue : leftMapTableValues) {
 
                 List<TableLineInterface> rightMapValues;
                 /*
                  * Если найден совпадающий ключ, то для всех значений с
                  * тем же ключом из правой таблицы совершается объединение
                  */
-                if (leftTable.containsKey(rightMapTableKey)) {
-                    rightMapValues = leftTable.get(rightMapTableKey);
+                if (rightTable.containsKey(leftMapTableKey)) {
+                    rightMapValues = rightTable.get(leftMapTableKey);
 
                     for (TableLineInterface rightLineValue : rightMapValues) {
                         requestedTableCollection.add(tableLine
-                                .setParameters(LineCreator.createLine(leftMapValue, rightLineValue)));
+                                .setParameters(LineCreator.createLine(leftLineValue, rightLineValue)));
                     }
                 } else {
                     /*
                      * Если нет строк с таким же ключом, недостающие ячейки заполняются "null"
                      */
-                    int size = leftMapValue.getValuableCellsCount();
+                    int size = leftLineValue.getValuableCellsCount();
                     requestedTableCollection.add(tableLine
-                            .setParameters(LineCreator.createNotJoinedLine(leftMapValue, size)));
+                            .setParameters(LineCreator.createNotJoinedLine(leftLineValue, size)));
                 }
 
             }
